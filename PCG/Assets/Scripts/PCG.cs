@@ -16,7 +16,7 @@ public class PCG : MonoBehaviour
     Vector2Int S = new Vector2Int(0, -1);
     Vector2Int W = new Vector2Int(-1, 0);
 
-    List<Vector2Int> Branches;
+    Queue<Vector2Int> Branches = new Queue<Vector2Int>();
 
     //////////////////////////////////////////////////////////////////////////
     // DESIGNER ADJUSTABLE VALUES
@@ -117,8 +117,14 @@ public class PCG : MonoBehaviour
         {
             // Start corridoring in random direction
             bool result = MakeCorridor();
-            if (result == false)
-                break;
+            if (result == false) // We failed to make a corridor
+            {
+                if (Branches.Count == 0)
+                    break;  // Generation over
+
+                // Pick up at next branch
+                cursor = Branches.Dequeue();
+            }
         }
 
         //Fill all empty tiles with walls
@@ -153,7 +159,7 @@ public class PCG : MonoBehaviour
             int roll = DieRoll(possibleDirections.Count) - 1;
             direction = possibleDirections[roll];
             // Check if we can move in that direction
-            if (GetTile(cursor + direction) != null)  // Cannot move in this direction
+            if (!CanCorridor(cursor + direction, direction))  // Cannot move in this direction
                 possibleDirections.RemoveAt(roll);
             else                                      // Can move in this direction!
                 break;
@@ -167,11 +173,15 @@ public class PCG : MonoBehaviour
         for (int i = 0; i < length; i++)
         {
             // Check if can continue corridor
-            if (GetTile(cursor + direction) != null)
+            if (!CanCorridor(cursor + direction, direction))
                 return true;  // Do not continue
             // Move cursor forward
             cursor += direction;
             SpawnTile(cursor.x, cursor.y);
+
+            // Randomly place branches
+            if (PercentRoll(10))
+                Branches.Enqueue(cursor);
         }
 
         // Corridor creation successful
@@ -249,6 +259,12 @@ public class PCG : MonoBehaviour
         SceneManager.LoadScene(currentSceneIndex);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //// --- AREA CHECKING ---
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     //Get a tile object (only walls and floors, currently)
     GameObject GetTile(int x, int y)
 	{
@@ -262,6 +278,22 @@ public class PCG : MonoBehaviour
         if (Math.Abs(pos.x) > MaxMapSize / 2 || Math.Abs(pos.y) > MaxMapSize / 2)
             return Prefabs["wall"];
         return TileMap[(pos.y * MaxMapSize) + pos.x + TileMapMidPoint];
+    }
+
+    // Can we continue a corridor at pos going in dir direction
+    bool CanCorridor(Vector2Int pos, Vector2Int dir)
+    {
+        if (GetTile(pos) != null)
+            return false;
+
+        // We want to add padding to sides of corridors
+        int temp = dir.y;
+        dir.y = dir.x;
+        dir.x = temp;
+        if (GetTile(pos + dir) != null || GetTile(pos - dir) != null)
+            return false;
+
+        return true;
     }
 
     //Spawn a tile object if somthing isn't already there
@@ -403,6 +435,12 @@ public class PCG : MonoBehaviour
     // Rolls an n sided dice, returns the result
     int DieRoll(int n)
     {
-        return RNG.Next(1, n);
+        return RNG.Next(1, n + 1);
+    }
+
+    // Rolls for a random percent chance
+    bool PercentRoll(int percentage)
+    {
+        return RNG.Next(1, 101) <= percentage;
     }
 }
