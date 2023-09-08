@@ -116,17 +116,9 @@ public class PCG : MonoBehaviour
         while (true)
         {
             // Start corridoring in random direction
-
-        }
-
-        // Make a corridor
-        // Chose a random direction
-        Vector2Int direction = RandomDir();
-        int length = DieRoll(10);
-        for (int i = 0; i < length; i++)
-        {
-            cursor += direction;
-            SpawnTile(cursor.x, cursor.y);
+            bool result = MakeCorridor();
+            if (result == false)
+                break;
         }
 
         //Fill all empty tiles with walls
@@ -146,21 +138,45 @@ public class PCG : MonoBehaviour
     // Returns false if cannot continue in any direction
     bool MakeCorridor()
     {
-        // Chose a random direction
-        Vector2Int direction = RandomDir();
+        // Make a list of all possible directions
+        List <Vector2Int> possibleDirections = new List<Vector2Int>();
+        possibleDirections.Add(N);
+        possibleDirections.Add(S);
+        possibleDirections.Add(E);
+        possibleDirections.Add(W);
 
+        // Chose a direction to go in
+        Vector2Int direction = new Vector2Int(0, 0);
+        while (possibleDirections.Count > 0)
+        {
+            // Chose a random possible direction
+            int roll = DieRoll(possibleDirections.Count) - 1;
+            direction = possibleDirections[roll];
+            // Check if we can move in that direction
+            if (GetTile(cursor + direction) != null)  // Cannot move in this direction
+                possibleDirections.RemoveAt(roll);
+            else                                      // Can move in this direction!
+                break;
+        }
+        // If we can't go in any direction, return false
+        if (possibleDirections.Count == 0)
+            return false;
 
+        // Make corridor
         int length = DieRoll(10);
         for (int i = 0; i < length; i++)
         {
+            // Check if can continue corridor
+            if (GetTile(cursor + direction) != null)
+                return true;  // Do not continue
+            // Move cursor forward
             cursor += direction;
             SpawnTile(cursor.x, cursor.y);
         }
 
+        // Corridor creation successful
         return true;
     }
-    /*
-     */
 
     //Generate a test room with enemies, pick-ups, etc.
     void GenerateTestRoom()
@@ -240,9 +256,16 @@ public class PCG : MonoBehaviour
 			return Prefabs["wall"];
 		return TileMap[(y * MaxMapSize) + x + TileMapMidPoint];
 	}
+    //Get a tile object (only walls and floors, currently)
+    GameObject GetTile(Vector2Int pos)
+    {
+        if (Math.Abs(pos.x) > MaxMapSize / 2 || Math.Abs(pos.y) > MaxMapSize / 2)
+            return Prefabs["wall"];
+        return TileMap[(pos.y * MaxMapSize) + pos.x + TileMapMidPoint];
+    }
 
-	//Spawn a tile object if somthing isn't already there
-	void SpawnTile(int x, int y)
+    //Spawn a tile object if somthing isn't already there
+    void SpawnTile(int x, int y)
 	{
 		if (GetTile(x,y) != null)
 			return;
