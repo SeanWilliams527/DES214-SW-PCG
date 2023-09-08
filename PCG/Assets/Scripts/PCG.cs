@@ -191,10 +191,10 @@ public class PCG : MonoBehaviour
             SpawnTile(cursor.x, cursor.y);
 
             // Randomly place branches
-            if (PercentRoll(10))
+            if (PercentRoll(20))
                 Branches.Enqueue(cursor);
             // Randomly place a room
-            if (PercentRoll(10))
+            if (PercentRoll(5))
             {
                 MakeRoom(cursor, direction);
                 return false;
