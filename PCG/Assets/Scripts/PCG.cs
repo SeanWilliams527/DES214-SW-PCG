@@ -18,12 +18,23 @@ public class PCG : MonoBehaviour
 
     Queue<Vector2Int> Branches = new Queue<Vector2Int>();
 
+    struct Room
+    {
+        public int w;
+        public int h;
+
+        public int Right;
+        public int Left;
+        public int Up;
+        public int Down;
+    };
+
     //////////////////////////////////////////////////////////////////////////
     // DESIGNER ADJUSTABLE VALUES
     //////////////////////////////////////////////////////////////////////////
 
     //Maximum height and width of tile map (must be odd, somewhere between 21 and 101 works well)
-    private int MaxMapSize = 41;
+    private int MaxMapSize = 101;
     //Size of floor and wall tiles in Unity units (somewhere between 1.0f and 10.0f works well)
     private float GridSize = 5.0f;
 
@@ -182,10 +193,128 @@ public class PCG : MonoBehaviour
             // Randomly place branches
             if (PercentRoll(10))
                 Branches.Enqueue(cursor);
+            // Randomly place a room
+            if (PercentRoll(10))
+            {
+                MakeRoom(cursor, direction);
+                return false;
+            }
         }
 
-        // Corridor creation successful
+        // Corridor creation can continue from this point
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //// --- Room Spawning ---
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // Make a room
+    void MakeRoom(Vector2Int entrance, Vector2Int dir)
+    {
+        // Dimensions for rooms
+        int maxWidth = 12;
+        int maxHeight = 12;
+        int minWidth = 3;
+        int minHeight = 3;
+
+        // Make room object
+        int tries = 1;  // Number of attempts we have to make a room
+        Room room = new Room();
+        while (tries > 0)
+        {
+            int w = RandInt(minWidth, maxWidth);
+            int h = RandInt(minHeight, maxHeight);
+            room = ConstructRoomObject(cursor, dir, w, h);
+            if (CheckRoom(room))
+                break;
+        }
+        if (tries == 0)
+            return;
+
+        /*
+        Debug.Log(dir);
+        Debug.Log("Down: " + room.Down);
+        Debug.Log("Up: " + room.Up);
+        Debug.Log("Left: " + room.Left);
+        Debug.Log("Right: " + room.Right);
+        Debug.Log("W: " + room.w);
+        Debug.Log("H: " + room.h);
+         */
+
+        // Place room
+        for (int x = room.Left; x <= room.Right; x++)
+        {
+            for (int y = room.Down; y <= room.Up; y++)
+            {
+                SpawnTile(x, y);
+            }
+        }
+
+        // Roll for exit on each wall
+        /*
+        if (PercentRoll(60))  // Roll for exit left
+        {
+            Branches.Enqueue(new Vector2Int(room.Left, RandInt(room.Down, room.Up)));
+        }
+        if (PercentRoll(60))  // Roll for exit right
+        {
+            Branches.Enqueue(new Vector2Int(room.Right, RandInt(room.Down, room.Up)));
+        }
+        if (PercentRoll(60))  // Roll for exit Up
+        {
+            Branches.Enqueue(new Vector2Int(RandInt(room.Left, room.Right), room.Up));
+        }
+        if (PercentRoll(60))  // Roll for exit Down
+        {
+            Branches.Enqueue(new Vector2Int(RandInt(room.Left, room.Right), room.Down));
+        }
+         */
+    }
+
+    // Constructs the room object, does not guarentee it can be placed
+    Room ConstructRoomObject(Vector2Int entrance, Vector2Int dir, int w, int h)
+    {
+        Room room = new Room();
+        room.w = w;
+        room.h = h;
+
+        // Entrance is on bottom wall
+        if (dir == N)
+        {
+            room.Down = entrance.y + dir.y;
+            room.Up = entrance.y + h;
+            room.Left = entrance.x - w / 2;
+            room.Right = room.Left + w - 1;
+        }
+        // Entrance is on top wall
+        else if (dir == S)
+        {
+            room.Up = entrance.y + dir.y;
+            room.Down = room.Up - h;
+            room.Left = entrance.x - w / 2;
+            room.Right = room.Left + (w - 1);
+        }
+        // Entrance is on left wall
+        else if (dir == E)
+        {
+            room.Up = entrance.y + h / 2;
+            room.Down = entrance.y - (h - 1);
+            room.Left = entrance.x + dir.x;
+            room.Right = room.Left + (w - 1);
+        }
+        // Entrance is on right wall
+        else if (dir == W)
+        {
+            room.Up = entrance.y + h / 2;
+            room.Down = entrance.y - (h - 1);
+            room.Right = entrance.x + dir.x;
+            room.Left = room.Right - (w - 1);
+        }
+
+        return room;
     }
 
     //Generate a test room with enemies, pick-ups, etc.
@@ -264,6 +393,22 @@ public class PCG : MonoBehaviour
     //// --- AREA CHECKING ---
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    bool CheckRoom(Room room)
+    {
+        // Check area for any tiles
+        for (int x = room.Left; x <= room.Right; x++)
+        {
+            for (int y = room.Down; y <= room.Up; y++)
+            {
+                if (GetTile(x, y) != null)
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
 
     //Get a tile object (only walls and floors, currently)
     GameObject GetTile(int x, int y)
@@ -442,5 +587,11 @@ public class PCG : MonoBehaviour
     bool PercentRoll(int percentage)
     {
         return RNG.Next(1, 101) <= percentage;
+    }
+
+    // Generates random integer between min and max inclusively
+    int RandInt(int min, int max)
+    {
+        return RNG.Next(min, max + 1);
     }
 }
