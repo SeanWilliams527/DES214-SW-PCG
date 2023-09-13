@@ -100,6 +100,13 @@ public class PCG : MonoBehaviour
             ResetLevel();
             return;
         }
+
+        //P to generate custom room
+        if (Input.GetKey(KeyCode.P))
+        {
+            GenerateCustomRoom();
+            return;
+        }
     }
 
     //Generate an actual level to play
@@ -194,7 +201,7 @@ public class PCG : MonoBehaviour
             if (PercentRoll(20))
                 Branches.Enqueue(cursor);
             // Randomly place a room
-            if (PercentRoll(5))
+            if (PercentRoll(10))
             {
                 MakeRoom(cursor, direction);
                 return false;
@@ -215,34 +222,32 @@ public class PCG : MonoBehaviour
     void MakeRoom(Vector2Int entrance, Vector2Int dir)
     {
         // Dimensions for rooms
-        int maxWidth = 12;
-        int maxHeight = 12;
+        int maxWidth = 26;
+        int maxHeight = 26;
         int minWidth = 3;
         int minHeight = 3;
 
         // Make room object
-        int tries = 1;  // Number of attempts we have to make a room
+        int tries = 3;  // Number of attempts we have to make a room
         Room room = new Room();
         while (tries > 0)
         {
             int w = RandInt(minWidth, maxWidth);
             int h = RandInt(minHeight, maxHeight);
+            // Ensure that dimensions are even
+            if (w % 2 != 0)
+                w += 1;
+            if (h % 2 != 0)
+                h += 1;
+
             room = ConstructRoomObject(cursor, dir, w, h);
-            if (CheckRoom(room))
+            if (CheckRoom(room))  // We have room to make this room!
                 break;
+            tries--;
         }
         if (tries == 0)
             return;
 
-        /*
-        Debug.Log(dir);
-        Debug.Log("Down: " + room.Down);
-        Debug.Log("Up: " + room.Up);
-        Debug.Log("Left: " + room.Left);
-        Debug.Log("Right: " + room.Right);
-        Debug.Log("W: " + room.w);
-        Debug.Log("H: " + room.h);
-         */
 
         // Place room
         for (int x = room.Left; x <= room.Right; x++)
@@ -254,7 +259,6 @@ public class PCG : MonoBehaviour
         }
 
         // Roll for exit on each wall
-        /*
         if (PercentRoll(60))  // Roll for exit left
         {
             Branches.Enqueue(new Vector2Int(room.Left, RandInt(room.Down, room.Up)));
@@ -271,7 +275,6 @@ public class PCG : MonoBehaviour
         {
             Branches.Enqueue(new Vector2Int(RandInt(room.Left, room.Right), room.Down));
         }
-         */
     }
 
     // Constructs the room object, does not guarentee it can be placed
@@ -361,6 +364,20 @@ public class PCG : MonoBehaviour
         FillWithWalls();
     }
 
+    // Generate a custom room for testing purposes
+    void GenerateCustomRoom()
+    {
+        //Clear any game object first
+        ClearLevel();
+
+        //Create the camera
+        SpawnCamera();
+
+        //Create the starting tile
+        SpawnTile(0, 0);
+        Spawn("player", 0.0f, 0.0f);
+    }
+
     //Clear the entire level except for the PCG object
     void ClearLevel()
     {
@@ -390,10 +407,28 @@ public class PCG : MonoBehaviour
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //// --- Room Modification ---
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Add 4 pillars to to the room
+    void RoomAdd4CrossPillars()
+    {
+
+    }
+
+    void RoomAddMiddlePillar(Room room)
+    {
+        // Get the middle of the room
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //// --- AREA CHECKING ---
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     bool CheckRoom(Room room)
     {
         // Check area for any tiles
