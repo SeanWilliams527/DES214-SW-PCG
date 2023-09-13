@@ -27,6 +27,8 @@ public class PCG : MonoBehaviour
         public int Left;
         public int Up;
         public int Down;
+
+        public Vector2Int entrance;
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -275,6 +277,8 @@ public class PCG : MonoBehaviour
         {
             Branches.Enqueue(new Vector2Int(RandInt(room.Left, room.Right), room.Down));
         }
+
+        RoomAddCrossPillars(room);
     }
 
     // Constructs the room object, does not guarentee it can be placed
@@ -283,6 +287,7 @@ public class PCG : MonoBehaviour
         Room room = new Room();
         room.w = w;
         room.h = h;
+        room.entrance = entrance;
 
         // Entrance is on bottom wall
         if (dir == N)
@@ -376,6 +381,10 @@ public class PCG : MonoBehaviour
         //Create the starting tile
         SpawnTile(0, 0);
         Spawn("player", 0.0f, 0.0f);
+        cursor.x = 0; cursor.y = 0;
+
+        Vector2Int dir = RandomDir();
+        MakeRoom(cursor + dir, dir);
     }
 
     //Clear the entire level except for the PCG object
@@ -412,9 +421,50 @@ public class PCG : MonoBehaviour
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Add 4 pillars to to the room
-    void RoomAdd4CrossPillars()
+    void RoomAddCrossPillars(Room room)
     {
+        // Minimum dimensions for room to qualify for cross pillars
+        int RoomwMin = 10;
+        int RoomhMin = 10;
+        if (room.w < RoomwMin || room.h < RoomhMin)
+            return;  // Room is too small!
 
+        // Make top row of pillars
+        // Position cursor on first pillar location for top row
+        cursor.x = room.Left + 2;
+        cursor.y = room.Up - 2;
+        // Add pillars from left to right
+        int end = room.Right - 1;
+        while (cursor.x < end)
+        {
+            // Make cross pillar
+            MakeCrossPillar();
+            // Move the cursor
+            cursor.x += 5;
+        }
+
+        // Make bottom row of pillars
+        // Position cursor on first pillar location for bottom row
+        cursor.x = room.Left + 2;
+        cursor.y = room.Down + 2;
+        // Add pillars from left to right
+        while (cursor.x < end)
+        {
+            // Make cross pillar
+            MakeCrossPillar();
+            // Move the cursor
+            cursor.x += 5;
+        }
+    }
+
+    // Makes a cross pillar at the cursor
+    void MakeCrossPillar()
+    {
+        DeleteTile(cursor);
+        DeleteTile(cursor + N);
+        DeleteTile(cursor + E);
+        DeleteTile(cursor + S);
+        DeleteTile(cursor + W);
     }
 
     void RoomAddMiddlePillar(Room room)
@@ -490,6 +540,15 @@ public class PCG : MonoBehaviour
         if (GetTile(x, y) != null)
             return;
         TileMap[(y * MaxMapSize) + x + TileMapMidPoint] = Spawn("wall", x, y);
+    }
+
+    void DeleteTile(Vector2Int pos)
+    {
+        // Check if out of bounds
+        if (Math.Abs(pos.x) > MaxMapSize / 2 || Math.Abs(pos.y) > MaxMapSize / 2)
+            return;
+        Destroy(TileMap[(pos.y * MaxMapSize) + pos.x + TileMapMidPoint]);
+        TileMap[(pos.y * MaxMapSize) + pos.x + TileMapMidPoint] = null;
     }
 
     //Fill any empty tiles with walls
