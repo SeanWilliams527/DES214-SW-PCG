@@ -226,8 +226,8 @@ public class PCG : MonoBehaviour
         // Dimensions for rooms
         int maxWidth = 26;
         int maxHeight = 26;
-        int minWidth = 3;
-        int minHeight = 3;
+        int minWidth = 10;
+        int minHeight = 10;
 
         // Make room object
         int tries = 3;  // Number of attempts we have to make a room
@@ -383,8 +383,12 @@ public class PCG : MonoBehaviour
         Spawn("player", 0.0f, 0.0f);
         cursor.x = 0; cursor.y = 0;
 
+        DeleteTile(cursor);
+        GetTile(cursor);
         Vector2Int dir = RandomDir();
         MakeRoom(cursor + dir, dir);
+
+        FillWithWalls();
     }
 
     //Clear the entire level except for the PCG object
@@ -420,7 +424,7 @@ public class PCG : MonoBehaviour
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Add 4 pillars to to the room
+    // Add cross pillars to the room
     void RoomAddCrossPillars(Room room)
     {
         // Minimum dimensions for room to qualify for cross pillars
