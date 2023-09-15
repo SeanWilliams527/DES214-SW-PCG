@@ -281,6 +281,7 @@ public class PCG : MonoBehaviour
 
         // Roll to modify room
 
+        /*
         if (PercentRoll(40))
             RoomAddMiddlePillar(room);
 
@@ -289,6 +290,9 @@ public class PCG : MonoBehaviour
             RoomAddCrossPillars(room);
         else if (roll == 2 || roll == 3 || roll == 4)
             RoomAddCourtYardWalls(room);
+         */
+
+        RoomAddCourtYardWalls(room);
     }
 
     // Constructs the room object, does not guarentee it can be placed
@@ -519,6 +523,12 @@ public class PCG : MonoBehaviour
 
     void RoomAddCourtYardWalls(Room room)
     {
+        // Minimum dimensions for room to qualify for middle pillar
+        int RoomwMin = 8;
+        int RoomhMin = 8;
+        if (room.w < RoomwMin || room.h < RoomhMin)
+            return;  // Room is too small!
+
         int wallWidth = room.w / 4;
         int wallHeight = room.h / 4;
 
