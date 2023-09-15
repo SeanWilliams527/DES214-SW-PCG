@@ -278,7 +278,8 @@ public class PCG : MonoBehaviour
             Branches.Enqueue(new Vector2Int(RandInt(room.Left, room.Right), room.Down));
         }
 
-        RoomAddCrossPillars(room);
+        //RoomAddCrossPillars(room);
+        RoomAddMiddlePillar(room);
     }
 
     // Constructs the room object, does not guarentee it can be placed
@@ -473,8 +474,30 @@ public class PCG : MonoBehaviour
 
     void RoomAddMiddlePillar(Room room)
     {
-        // Get the middle of the room
+        // Minimum dimensions for room to qualify for middle pillar
+        int RoomwMin = 6;
+        int RoomhMin = 6;
+        if (room.w < RoomwMin || room.h < RoomhMin)
+            return;  // Room is too small!
 
+        // Make middle pillar
+        cursor.x = room.Left + (room.w / 2) - 2;
+        cursor.y = room.Down + (room.h / 2) - 2;
+        DeleteTile(cursor + W);
+        DeleteTile(cursor + W + W);
+        cursor += N;
+        DeleteTile(cursor);
+        DeleteTile(cursor + W);
+        DeleteTile(cursor + W + W);
+        DeleteTile(cursor + W + W + W);
+        cursor += N;
+        DeleteTile(cursor);
+        DeleteTile(cursor + W);
+        DeleteTile(cursor + W + W);
+        DeleteTile(cursor + W + W + W);
+        cursor += N;
+        DeleteTile(cursor + W);
+        DeleteTile(cursor + W + W);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
