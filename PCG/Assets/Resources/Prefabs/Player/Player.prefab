@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Weight: 0
-  Padding: 2000
+  Padding: 10
   Cinematic: 0
 --- !u!1001 &1772664446125870452
 PrefabInstance:

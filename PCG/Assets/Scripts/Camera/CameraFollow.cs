@@ -26,9 +26,10 @@ public class CameraFollow : MonoBehaviour
     //Percentage to interpolate zooming out over one second
     private float ZoomOutInterpolant = 1.0f;
     //Percentage to interpolate zooming in over one second
-    private float ZoomInInterpolant = 0.1f;
+    private float ZoomInInterpolant = 0.95f;
+    //private float ZoomInInterpolantDefault = 0.5f;
     //Map mode zoom size
-    private float MapModeZoom = 100.0f; //This might need to be bigger if you have a large level
+    private float MapModeZoom = 500.0f; //This might need to be bigger if you have a large level
 
     //////////////////////////////////////////////////////////////////////////
 
@@ -54,7 +55,16 @@ public class CameraFollow : MonoBehaviour
 
         //M to see the whole map
         if (Input.GetKey(KeyCode.M))
+        {
             GetComponent<Camera>().orthographicSize = MapModeZoom;
+            // Flip between map mode and zoom mode
+            /*
+            if (ZoomInInterpolant == 0.0f) // Already in map mode
+                ZoomInInterpolant = ZoomInInterpolantDefault;
+            else
+                ZoomInInterpolant = 0.0f;
+             */
+        }
     }
 
     //Follow the camera target

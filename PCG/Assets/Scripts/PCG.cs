@@ -36,7 +36,7 @@ public class PCG : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////
 
     //Maximum height and width of tile map (must be odd, somewhere between 21 and 101 works well)
-    private int MaxMapSize = 101;
+    private int MaxMapSize = 201;
     //Size of floor and wall tiles in Unity units (somewhere between 1.0f and 10.0f works well)
     private float GridSize = 5.0f;
 
@@ -226,8 +226,8 @@ public class PCG : MonoBehaviour
         // Dimensions for rooms
         int maxWidth = 26;
         int maxHeight = 26;
-        int minWidth = 10;
-        int minHeight = 10;
+        int minWidth = 4;
+        int minHeight = 4;
 
         // Make room object
         int tries = 3;  // Number of attempts we have to make a room
@@ -261,25 +261,34 @@ public class PCG : MonoBehaviour
         }
 
         // Roll for exit on each wall
-        if (PercentRoll(60))  // Roll for exit left
+        int exitChance = 60;
+        if (PercentRoll(exitChance))  // Roll for exit left
         {
             Branches.Enqueue(new Vector2Int(room.Left, RandInt(room.Down, room.Up)));
         }
-        if (PercentRoll(60))  // Roll for exit right
+        if (PercentRoll(exitChance))  // Roll for exit right
         {
             Branches.Enqueue(new Vector2Int(room.Right, RandInt(room.Down, room.Up)));
         }
-        if (PercentRoll(60))  // Roll for exit Up
+        if (PercentRoll(exitChance))  // Roll for exit Up
         {
             Branches.Enqueue(new Vector2Int(RandInt(room.Left, room.Right), room.Up));
         }
-        if (PercentRoll(60))  // Roll for exit Down
+        if (PercentRoll(exitChance))  // Roll for exit Down
         {
             Branches.Enqueue(new Vector2Int(RandInt(room.Left, room.Right), room.Down));
         }
 
-        //RoomAddCrossPillars(room);
-        RoomAddMiddlePillar(room);
+        // Roll to modify room
+
+        if (PercentRoll(40))
+            RoomAddMiddlePillar(room);
+
+        int roll = DieRoll(6);
+        if (roll == 1)
+            RoomAddCrossPillars(room);
+        else if (roll == 2 || roll == 3 || roll == 4)
+            RoomAddCourtYardWalls(room);
     }
 
     // Constructs the room object, does not guarentee it can be placed
@@ -424,6 +433,14 @@ public class PCG : MonoBehaviour
     //// --- Room Modification ---
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // Make the room rounded on the down left edge
+    void RoomAddRoundEdgeDL(Room room)
+    {
+        int height = (room.h / 2) - 1;
+
+        //for ()
+    }
 
     // Add cross pillars to the room
     void RoomAddCrossPillars(Room room)
@@ -483,21 +500,84 @@ public class PCG : MonoBehaviour
         // Make middle pillar
         cursor.x = room.Left + (room.w / 2) - 2;
         cursor.y = room.Down + (room.h / 2) - 2;
-        DeleteTile(cursor + W);
-        DeleteTile(cursor + W + W);
+        DeleteTile(cursor + E);
+        DeleteTile(cursor + E + E);
         cursor += N;
         DeleteTile(cursor);
-        DeleteTile(cursor + W);
-        DeleteTile(cursor + W + W);
-        DeleteTile(cursor + W + W + W);
+        DeleteTile(cursor + E);
+        DeleteTile(cursor + E + E);
+        DeleteTile(cursor + E + E + E);
         cursor += N;
         DeleteTile(cursor);
-        DeleteTile(cursor + W);
-        DeleteTile(cursor + W + W);
-        DeleteTile(cursor + W + W + W);
+        DeleteTile(cursor + E);
+        DeleteTile(cursor + E + E);
+        DeleteTile(cursor + E + E + E);
         cursor += N;
-        DeleteTile(cursor + W);
-        DeleteTile(cursor + W + W);
+        DeleteTile(cursor + E);
+        DeleteTile(cursor + E + E);
+    }
+
+    void RoomAddCourtYardWalls(Room room)
+    {
+        int wallWidth = room.w / 4;
+        int wallHeight = room.h / 4;
+
+        // Calculate starting points (corners) for each wall
+        Vector2Int downLeftStart = new Vector2Int(room.Left + (wallWidth - 1), room.Down + (wallHeight - 1));
+        Vector2Int downRightStart = new Vector2Int(room.Right - (wallWidth - 1), downLeftStart.y);
+        Vector2Int upLeftStart = new Vector2Int(downLeftStart.x, room.Up - (wallHeight - 1));
+        Vector2Int upRightStart = new Vector2Int(downRightStart.x, upLeftStart.y);
+
+        // Make vertical parts of wall
+        cursor = downLeftStart;
+        for (int i = 0; i < wallHeight; i++)
+        {
+            DeleteTile(cursor);
+            cursor += N;
+        }
+        cursor = downRightStart;
+        for (int i = 0; i < wallHeight; i++)
+        {
+            DeleteTile(cursor);
+            cursor += N;
+        }
+        cursor = upLeftStart;
+        for (int i = 0; i < wallHeight; i++)
+        {
+            DeleteTile(cursor);
+            cursor += S;
+        }
+        cursor = upRightStart;
+        for (int i = 0; i < wallHeight; i++)
+        {
+            DeleteTile(cursor);
+            cursor += S;
+        }
+        //Make horizontal parts of wall
+        cursor = downLeftStart;
+        for (int i = 0; i < wallWidth; i++)
+        {
+            DeleteTile(cursor);
+            cursor += E;
+        }
+        cursor = downRightStart;
+        for (int i = 0; i < wallWidth; i++)
+        {
+            DeleteTile(cursor);
+            cursor += W;
+        }
+        cursor = upLeftStart;
+        for (int i = 0; i < wallWidth; i++)
+        {
+            DeleteTile(cursor);
+            cursor += E;
+        }
+        cursor = upRightStart;
+        for (int i = 0; i < wallWidth; i++)
+        {
+            DeleteTile(cursor);
+            cursor += W;
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
