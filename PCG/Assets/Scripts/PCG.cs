@@ -175,7 +175,7 @@ public class PCG : MonoBehaviour
     bool MakeCorridor()
     {
         // Decide Random direction to go
-        List<Vector2Int> possibleDirections = CorridorGetPossibleDirections();
+        List<Vector2Int> possibleDirections = CorridorGetPossibleDirectionsNoSides();
         if (possibleDirections.Count == 0)
             return false;  // No directions to go
         Vector2Int direction = possibleDirections[DieRoll(possibleDirections.Count) - 1];
@@ -185,7 +185,7 @@ public class PCG : MonoBehaviour
         for (int i = 0; i < length; i++)
         {
             // Check if can continue corridor
-            if (!CanCorridor(cursor + direction, direction))
+            if (!CanCorridorNoSides(cursor + direction, direction))
                 return true;  // Do not continue
             // Move cursor forward
             cursor += direction;
@@ -222,7 +222,7 @@ public class PCG : MonoBehaviour
         // ------------------------------------------------------
 
         // Decide direction to go
-        List<Vector2Int> possibleDirections = CorridorGetPossibleDirections();
+        List<Vector2Int> possibleDirections = CorridorGetPossibleDirectionsNoSides();
         if (possibleDirections.Count == 0)
             return false;  // No directions to go
         Vector2Int dir = possibleDirections[DieRoll(possibleDirections.Count) - 1];
@@ -274,18 +274,63 @@ public class PCG : MonoBehaviour
         return true;
     }
 
+    // Make a drunk corridoor
+    bool MakeDrunkCorridor()
+    {
+        // ---------------- Drunk Variables ---------------------
+        int minLength = 5;
+        int maxLength = 20;
+        // ------------------------------------------------------
+
+        int length = RandInt(minLength, maxLength);
+
+        for (int i = 0; i < length; i++)
+        {
+            // Decide Random direction to walk
+            // This direction will change every step
+            List<Vector2Int> possibleDirections = CorridorGetPossibleDirections();
+            if (possibleDirections.Count == 0)
+                return false;  // No directions to go
+            Vector2Int dir = possibleDirections[DieRoll(possibleDirections.Count) - 1];
+
+            // Walk cursor forward
+            cursor += dir;
+            // Place tile at cursor
+            SpawnTile(cursor.x, cursor.y);
+        }
+
+        return true;
+    }
+
+    // Returns a list of directions that a corridor can go in if you arent allowed to connect on the side
+    List<Vector2Int> CorridorGetPossibleDirectionsNoSides()
+    {
+        // Make a list of all directions
+        List<Vector2Int> possibleDirections = new List<Vector2Int>();
+        if (CanCorridorNoSides(cursor + N, N))
+            possibleDirections.Add(N);
+        if (CanCorridorNoSides(cursor + E, E))
+            possibleDirections.Add(E);
+        if (CanCorridorNoSides(cursor + S, S))
+            possibleDirections.Add(S);
+        if (CanCorridorNoSides(cursor + W, W))
+            possibleDirections.Add(W);
+
+        return possibleDirections;
+    }
+
     // Returns a list of directions that a corridor can go in
     List<Vector2Int> CorridorGetPossibleDirections()
     {
         // Make a list of all directions
         List<Vector2Int> possibleDirections = new List<Vector2Int>();
-        if (CanCorridor(cursor + N, N))
+        if (GetTile(cursor + N) == null)
             possibleDirections.Add(N);
-        if (CanCorridor(cursor + E, E))
+        if (GetTile(cursor + E) == null)
             possibleDirections.Add(E);
-        if (CanCorridor(cursor + S, S))
+        if (GetTile(cursor + S) == null)
             possibleDirections.Add(S);
-        if (CanCorridor(cursor + W, W))
+        if (GetTile(cursor + W) == null)
             possibleDirections.Add(W);
 
         return possibleDirections;
@@ -472,7 +517,7 @@ public class PCG : MonoBehaviour
         Spawn("player", 0.0f, 0.0f);
         cursor.x = 0; cursor.y = 0;
 
-        MakeSnakeCorridor();
+        MakeDrunkCorridor();
         //Vector2Int dir = RandomDir();
         //MakeRoom(cursor + dir, dir);
 
@@ -713,7 +758,7 @@ public class PCG : MonoBehaviour
     }
 
     // Can we continue a corridor at pos going in dir direction
-    bool CanCorridor(Vector2Int pos, Vector2Int dir)
+    bool CanCorridorNoSides(Vector2Int pos, Vector2Int dir)
     {
         if (GetTile(pos) != null)
             return false;
