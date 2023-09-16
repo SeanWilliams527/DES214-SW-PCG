@@ -53,7 +53,7 @@ public class PCG : MonoBehaviour
     private int TileMapMidPoint;
 
     //A random number generator for this run
-	private System.Random RNG;
+    private System.Random RNG;
 
     //Dictionary of all PCG prefabs
     public Dictionary<string, GameObject> Prefabs;
@@ -61,7 +61,7 @@ public class PCG : MonoBehaviour
     //A static reference to allow easy access from other scripts
     //(if you add a "using static PCG;" statement to that script)
     public static PCG PCGObject;
-	
+
     //Start is called before the first frame update
     void Start()
     {
@@ -69,13 +69,13 @@ public class PCG : MonoBehaviour
         PCGObject = this;
 
         //Load all the prefabs into the prefabs dictionary
-		LoadPrefabs(); 
+        LoadPrefabs();
 
         //Create the tile map
         if (MaxMapSize % 2 == 0)
             ++MaxMapSize; //This needs to be an odd number
-		TileMap = new GameObject[MaxMapSize * MaxMapSize];
-		TileMapMidPoint = (MaxMapSize * MaxMapSize) / 2; //The 0,0 point
+        TileMap = new GameObject[MaxMapSize * MaxMapSize];
+        TileMapMidPoint = (MaxMapSize * MaxMapSize) / 2; //The 0,0 point
 
         //Get a new random generator
         //Could feed it a set seed if need the same level for debugging purposes
@@ -118,7 +118,7 @@ public class PCG : MonoBehaviour
 
     //Generate an actual level to play
     void GenerateLevel()
-	{
+    {
         //Clear any game objects first, just in case
         ClearLevel();
 
@@ -164,7 +164,7 @@ public class PCG : MonoBehaviour
     //// --- Corridor Spawning ---
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     // Makes a corridor in a random direction
     // Returns false if cannot continue corridoring from last tile in corridor
     bool MakeCorridor()
@@ -202,8 +202,70 @@ public class PCG : MonoBehaviour
         return true;
     }
 
+    // Make a snake corridoor
     bool MakeSnakeCorridor()
     {
+        // ---------------- Snake Variables ---------------------
+        int snakeMinLength = 3;
+        int snakeMaxLength = 30;
+        // Snake goes back and forth
+        // How many tiles should we go before snaking to other side
+        int snakeMinStride = 3;
+        int snakeMaxStride = 8;
+        // Percent chance for branch on each side tile placed
+        int branchChance = 5;
+        // ------------------------------------------------------
+
+        // Decide direction to go
+        List<Vector2Int> possibleDirections = CorridorGetPossibleDirections();
+        if (possibleDirections.Count == 0)
+            return false;  // No directions to go
+        Vector2Int dir = possibleDirections[DieRoll(possibleDirections.Count) - 1];
+        // Corridor will go forward and side to side
+        Vector2Int side1 = InvertVector(dir);
+        Vector2Int side2 = side1 * -1;
+
+        // Determine snake length and stride
+        int length = RandInt(snakeMinLength, snakeMaxLength);
+        int stride = RandInt(snakeMinStride, snakeMaxStride);
+
+        // Construct snake
+        Vector2Int currentSide = side1;   // Which side are we currently going forward in
+        int strideAmountLeft = stride;    // How much length is left in the current stride
+        for (int i = 0; i < length; i++)
+        {
+            // Snake will trample over anything in its way
+            // Only check if going out of bounds
+            if (IsOutOfBounds(cursor + dir + currentSide))
+                return false; // Cannot continue
+
+            // Move cursor forward and to side (move diagonally)
+            cursor += (dir + currentSide);
+            SpawnTile(cursor);
+            SpawnTile(cursor + side1);
+            SpawnTile(cursor + side2);
+
+            strideAmountLeft--;
+
+            // Check if we are done with current stride
+            if (strideAmountLeft == 0)
+            {
+                // Swap current side
+                if (currentSide == side1)
+                    currentSide = side2;
+                else
+                    currentSide = side1;
+                // Reset Stride
+                strideAmountLeft = stride;
+            }
+
+            // Place branches at random
+            if (PercentRoll(branchChance))  // Roll for branch on side 1
+                Branches.Enqueue(cursor + side1);
+            if (PercentRoll(branchChance))  // Roll for branch on side 2
+                Branches.Enqueue(cursor + side2);
+        }
+
         return true;
     }
 
@@ -229,7 +291,7 @@ public class PCG : MonoBehaviour
     //// --- Room Spawning ---
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     // Make a room. Returns false if could not create room
     bool MakeRoom(Vector2Int entrance, Vector2Int dir)
     {
@@ -405,10 +467,9 @@ public class PCG : MonoBehaviour
         Spawn("player", 0.0f, 0.0f);
         cursor.x = 0; cursor.y = 0;
 
-        DeleteTile(cursor);
-        GetTile(cursor);
-        Vector2Int dir = RandomDir();
-        MakeRoom(cursor + dir, dir);
+        MakeSnakeCorridor();
+        //Vector2Int dir = RandomDir();
+        //MakeRoom(cursor + dir, dir);
 
         FillWithWalls();
     }
@@ -447,7 +508,7 @@ public class PCG : MonoBehaviour
     //// --- Room Modification ---
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     // Make the room rounded on the down left edge
     void RoomAddRoundEdgeDL(Room room)
     {
@@ -624,17 +685,26 @@ public class PCG : MonoBehaviour
 
     //Get a tile object (only walls and floors, currently)
     GameObject GetTile(int x, int y)
-	{
-		if (Math.Abs(x) > MaxMapSize/2 || Math.Abs(y) > MaxMapSize/2)
-			return Prefabs["wall"];
-		return TileMap[(y * MaxMapSize) + x + TileMapMidPoint];
-	}
+    {
+        if (Math.Abs(x) > MaxMapSize / 2 || Math.Abs(y) > MaxMapSize / 2)
+            return Prefabs["wall"];
+        return TileMap[(y * MaxMapSize) + x + TileMapMidPoint];
+    }
     //Get a tile object (only walls and floors, currently)
     GameObject GetTile(Vector2Int pos)
     {
         if (Math.Abs(pos.x) > MaxMapSize / 2 || Math.Abs(pos.y) > MaxMapSize / 2)
             return Prefabs["wall"];
         return TileMap[(pos.y * MaxMapSize) + pos.x + TileMapMidPoint];
+    }
+
+    // Returns true if a position is out of bounds
+    bool IsOutOfBounds(Vector2Int pos)
+    {
+        if (Math.Abs(pos.x) > MaxMapSize / 2 || Math.Abs(pos.y) > MaxMapSize / 2)
+            return true;
+        else
+            return false;
     }
 
     // Can we continue a corridor at pos going in dir direction
@@ -655,11 +725,19 @@ public class PCG : MonoBehaviour
 
     //Spawn a tile object if somthing isn't already there
     void SpawnTile(int x, int y)
-	{
-		if (GetTile(x,y) != null)
-			return;
-		TileMap[(y * MaxMapSize) + x + TileMapMidPoint] = Spawn("floor", x, y);
-	}
+    {
+        if (GetTile(x, y) != null)
+            return;
+        TileMap[(y * MaxMapSize) + x + TileMapMidPoint] = Spawn("floor", x, y);
+    }
+
+    //Spawn a tile object if somthing isn't already there
+    void SpawnTile(Vector2Int pos)
+    {
+        if (GetTile(pos.x, pos.y) != null)
+            return;
+        TileMap[(pos.y * MaxMapSize) + pos.x + TileMapMidPoint] = Spawn("floor", pos.x, pos.y);
+    }
 
     //Spawn a wall object if something isn't already there
     void SpawnWall(int x, int y)
@@ -688,21 +766,21 @@ public class PCG : MonoBehaviour
 
     //Spawn any object
     GameObject Spawn(string obj, float x, float y)
-	{
-		return Instantiate(Prefabs[obj], new Vector3(x * GridSize, y * GridSize, 0.0f), Quaternion.identity);
-	}
+    {
+        return Instantiate(Prefabs[obj], new Vector3(x * GridSize, y * GridSize, 0.0f), Quaternion.identity);
+    }
 
-	//Spawn any object rotated 90 degrees left
-	GameObject SpawnRotateLeft(string obj, float x, float y)
-	{
-		return Instantiate(Prefabs[obj], new Vector3(x * GridSize, y * GridSize, 0.0f), Quaternion.AngleAxis(-90, Vector3.forward));
-	}
+    //Spawn any object rotated 90 degrees left
+    GameObject SpawnRotateLeft(string obj, float x, float y)
+    {
+        return Instantiate(Prefabs[obj], new Vector3(x * GridSize, y * GridSize, 0.0f), Quaternion.AngleAxis(-90, Vector3.forward));
+    }
 
-	//Spawn any object rotated 90 degrees right
-	GameObject SpawnRotateRight(string obj, float x, float y)
-	{
-		return Instantiate(Prefabs[obj], new Vector3(x * GridSize, y * GridSize, 0.0f), Quaternion.AngleAxis(90, Vector3.forward));
-	}
+    //Spawn any object rotated 90 degrees right
+    GameObject SpawnRotateRight(string obj, float x, float y)
+    {
+        return Instantiate(Prefabs[obj], new Vector3(x * GridSize, y * GridSize, 0.0f), Quaternion.AngleAxis(90, Vector3.forward));
+    }
 
     //Spawn main camera and the weighted camera target
     void SpawnCamera()
@@ -732,11 +810,11 @@ public class PCG : MonoBehaviour
         //Create a cinematic anchor to pan to, and set it's position
         var cinematicAnchor = Instantiate(PCGObject.Prefabs["cinematicanchor"]);
         cinematicAnchor.transform.position = panTo.transform.position;
-	}		
+    }
 
-	void LoadPrefabs()
-	{
-		//Create a prefabs dictionary
+    void LoadPrefabs()
+    {
+        //Create a prefabs dictionary
         Prefabs = new Dictionary<string, GameObject>();
 
         //Load all the prefabs we need for map generation (note that these must be in the "Resources" folder)
@@ -763,7 +841,7 @@ public class PCG : MonoBehaviour
         Prefabs.Add("ultra", Resources.Load<GameObject>("Prefabs/Enemies/UltraEnemy"));
         Prefabs.Add("boss", Resources.Load<GameObject>("Prefabs/Enemies/BossEnemy"));
 
-		//Load all the pick-ups
+        //Load all the pick-ups
         Prefabs.Add("heart", Resources.Load<GameObject>("Prefabs/Pickups/HeartPickup"));
         Prefabs.Add("healthboost", Resources.Load<GameObject>("Prefabs/Pickups/HealthBoost"));
         Prefabs.Add("shotboost", Resources.Load<GameObject>("Prefabs/Pickups/ShotBoost"));
@@ -783,12 +861,12 @@ public class PCG : MonoBehaviour
     //// --- RNG ---
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     // Returns a random direction
     Vector2Int RandomDir()
     {
         int roll = DieRoll(4);
-        switch(roll)
+        switch (roll)
         {
             case 1: return N;
             case 2: return E;
@@ -825,5 +903,17 @@ public class PCG : MonoBehaviour
         }
         RNG = new System.Random(seed);
         Debug.Log("Seed: " + seed.ToString());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //// --- OTHER ---
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Returns a vector with the x and y swapped
+    Vector2Int InvertVector(Vector2Int vec)
+    {
+        return new Vector2Int(vec.y, vec.x);
     }
 }
