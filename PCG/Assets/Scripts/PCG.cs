@@ -40,6 +40,11 @@ public class PCG : MonoBehaviour
     //Size of floor and wall tiles in Unity units (somewhere between 1.0f and 10.0f works well)
     private float GridSize = 5.0f;
 
+    [SerializeField]
+    bool useSeed;
+    [SerializeField]
+    int seed;
+
     //////////////////////////////////////////////////////////////////////////
 
     //Tilemap array to make sure we don't put walls over floors--has no effect during gameplay
@@ -74,7 +79,7 @@ public class PCG : MonoBehaviour
 
         //Get a new random generator
         //Could feed it a set seed if need the same level for debugging purposes
-		RNG = new System.Random();
+        ReSeedRNG();
 
         //Generate a level
         GenerateLevel();
@@ -428,6 +433,8 @@ public class PCG : MonoBehaviour
     //This is public so it can be called from other files using the static PCGObject from above
     public void ResetLevel()
     {
+        ReSeedRNG();
+
         var currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex);
     }
@@ -804,5 +811,16 @@ public class PCG : MonoBehaviour
     int RandInt(int min, int max)
     {
         return RNG.Next(min, max + 1);
+    }
+
+    void ReSeedRNG()
+    {
+        if (!useSeed)
+        {
+            System.Random SeedGenerator = new System.Random();
+            seed = SeedGenerator.Next(1, 1000000);
+        }
+        RNG = new System.Random(seed);
+        Debug.Log("Seed: " + seed.ToString());
     }
 }
