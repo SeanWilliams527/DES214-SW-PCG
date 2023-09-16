@@ -210,8 +210,9 @@ public class PCG : MonoBehaviour
             // Randomly place a room
             if (PercentRoll(10))
             {
-                MakeRoom(cursor, direction);
-                return false;
+                // If we successfully create room, stop corridoring
+                if (MakeRoom(cursor, direction))
+                    return false;
             }
         }
 
@@ -225,8 +226,8 @@ public class PCG : MonoBehaviour
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    // Make a room
-    void MakeRoom(Vector2Int entrance, Vector2Int dir)
+    // Make a room. Returns false if could not create room
+    bool MakeRoom(Vector2Int entrance, Vector2Int dir)
     {
         // Dimensions for rooms
         int maxWidth = 26;
@@ -253,7 +254,7 @@ public class PCG : MonoBehaviour
             tries--;
         }
         if (tries == 0)
-            return;
+            return false;  // Room creation unsuccessful
 
 
         // Place room
@@ -298,6 +299,8 @@ public class PCG : MonoBehaviour
          */
 
         RoomAddCourtYardWalls(room);
+
+        return true;  // Successfully created room
     }
 
     // Constructs the room object, does not guarentee it can be placed
