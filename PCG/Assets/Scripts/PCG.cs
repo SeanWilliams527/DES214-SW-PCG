@@ -141,7 +141,12 @@ public class PCG : MonoBehaviour
         while (true)
         {
             // Start corridoring in random direction
-            bool result = MakeCorridor();
+            bool result;
+            if (PercentRoll(5))
+                result = MakeSnakeCorridor();
+            else
+                result = MakeCorridor();
+
             if (result == false) // We failed to make a corridor
             {
                 if (Branches.Count == 0)
