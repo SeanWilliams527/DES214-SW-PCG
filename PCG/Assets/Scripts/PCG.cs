@@ -166,32 +166,14 @@ public class PCG : MonoBehaviour
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     // Makes a corridor in a random direction
-    // Returns false if cannot continue in any direction
+    // Returns false if cannot continue corridoring from last tile in corridor
     bool MakeCorridor()
     {
-        // Make a list of all possible directions
-        List <Vector2Int> possibleDirections = new List<Vector2Int>();
-        possibleDirections.Add(N);
-        possibleDirections.Add(S);
-        possibleDirections.Add(E);
-        possibleDirections.Add(W);
-
-        // Chose a direction to go in
-        Vector2Int direction = new Vector2Int(0, 0);
-        while (possibleDirections.Count > 0)
-        {
-            // Chose a random possible direction
-            int roll = DieRoll(possibleDirections.Count) - 1;
-            direction = possibleDirections[roll];
-            // Check if we can move in that direction
-            if (!CanCorridor(cursor + direction, direction))  // Cannot move in this direction
-                possibleDirections.RemoveAt(roll);
-            else                                      // Can move in this direction!
-                break;
-        }
-        // If we can't go in any direction, return false
+        // Decide Random direction to go
+        List<Vector2Int> possibleDirections = CorridorGetPossibleDirections();
         if (possibleDirections.Count == 0)
-            return false;
+            return false;  // No directions to go
+        Vector2Int direction = possibleDirections[DieRoll(possibleDirections.Count) - 1];
 
         // Make corridor
         int length = DieRoll(10);
@@ -218,6 +200,28 @@ public class PCG : MonoBehaviour
 
         // Corridor creation can continue from this point
         return true;
+    }
+
+    bool MakeSnakeCorridor()
+    {
+        return true;
+    }
+
+    // Returns a list of directions that a corridor can go in
+    List<Vector2Int> CorridorGetPossibleDirections()
+    {
+        // Make a list of all directions
+        List<Vector2Int> possibleDirections = new List<Vector2Int>();
+        if (CanCorridor(cursor + N, N))
+            possibleDirections.Add(N);
+        if (CanCorridor(cursor + E, E))
+            possibleDirections.Add(E);
+        if (CanCorridor(cursor + S, S))
+            possibleDirections.Add(S);
+        if (CanCorridor(cursor + W, W))
+            possibleDirections.Add(W);
+
+        return possibleDirections;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,7 +291,6 @@ public class PCG : MonoBehaviour
 
         // Roll to modify room
 
-        /*
         if (PercentRoll(40))
             RoomAddMiddlePillar(room);
 
@@ -296,9 +299,6 @@ public class PCG : MonoBehaviour
             RoomAddCrossPillars(room);
         else if (roll == 2 || roll == 3 || roll == 4)
             RoomAddCourtYardWalls(room);
-         */
-
-        RoomAddCourtYardWalls(room);
 
         return true;  // Successfully created room
     }
