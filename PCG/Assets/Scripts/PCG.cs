@@ -302,6 +302,41 @@ public class PCG : MonoBehaviour
         return true;
     }
 
+    // Make an outcove corridoor
+    bool MakeOutcoveCorridoor()
+    {
+        // ---------------- Outcove Variables ---------------------
+        int minLength = 20;
+        int maxLength = 6;
+
+        int roomChance;
+        // --------------------------------------------------------
+
+        List<Vector2Int> possibleDirections = CorridorGetPossibleDirections();
+        if (possibleDirections.Count == 0)
+            return false;  // No directions to go
+        Vector2Int dir = possibleDirections[DieRoll(possibleDirections.Count) - 1];
+        int length = RandInt(minLength, maxLength);
+
+        bool makeOutcove = false;  // Should we make an outcove on this step?
+        // Make a corridor with alternating skinny and outcove sections
+        for (int i = 0; i < length; i++)
+        {
+            if (makeOutcove)
+            {
+
+            }
+            else
+            {
+
+            }
+
+            makeOutcove = !makeOutcove;
+        }
+
+        return true;
+    }
+
     // Returns a list of directions that a corridor can go in if you arent allowed to connect on the side
     List<Vector2Int> CorridorGetPossibleDirectionsNoSides()
     {
