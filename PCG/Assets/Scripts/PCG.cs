@@ -418,6 +418,7 @@ public class PCG : MonoBehaviour
         }
 
         // Roll for exit on each wall
+        /*
         int exitChance = 60;
         if (PercentRoll(exitChance))  // Roll for exit left
         {
@@ -446,8 +447,76 @@ public class PCG : MonoBehaviour
             RoomAddCrossPillars(room);
         else if (roll == 2 || roll == 3 || roll == 4)
             RoomAddCourtYardWalls(room);
+         */
+
+        RoomMakeRound(room);
 
         return true;  // Successfully created room
+    }
+
+    void RoomAddExit(Room room, Vector2Int side)
+    {
+
+    }
+
+    void RoomMakeRound(Room room)
+    {
+        // Minimum dimensions for room to qualify for rounding
+        int RoomwMin = 6;
+        int RoomhMin = 6;
+        if (room.w < RoomwMin || room.h < RoomhMin)
+            return;  // Room is too small!
+
+        // Radius of the rounded corner
+        int radius = Math.Min(room.h, room.w) / 4;
+
+        // Round the NW corner
+        cursor.x = room.Left; cursor.y = room.Up;
+        for (int i = 0; i < radius; i++)
+        {
+            int height = radius - i;
+            for (int h = 0; h < height; h++)
+                DeleteTile(cursor + (h * S));
+
+            // Continue cursor left or right
+            cursor += E;
+        }
+
+        // Round the NE corner
+        cursor.x = room.Right; cursor.y = room.Up;
+        for (int i = 0; i < radius; i++)
+        {
+            int height = radius - i;
+            for (int h = 0; h < height; h++)
+                DeleteTile(cursor + (h * S));
+
+            // Continue cursor left or right
+            cursor += W;
+        }
+
+        // Round the SW corner
+        cursor.x = room.Left; cursor.y = room.Down;
+        for (int i = 0; i < radius; i++)
+        {
+            int height = radius - i;
+            for (int h = 0; h < height; h++)
+                DeleteTile(cursor + (h * N));
+
+            // Continue cursor left or right
+            cursor += E;
+        }
+
+        // Round the SE corner
+        cursor.x = room.Right; cursor.y = room.Down;
+        for (int i = 0; i < radius; i++)
+        {
+            int height = radius - i;
+            for (int h = 0; h < height; h++)
+                DeleteTile(cursor + (h * N));
+
+            // Continue cursor left or right
+            cursor += W;
+        }
     }
 
     // Constructs the room object, does not guarentee it can be placed
