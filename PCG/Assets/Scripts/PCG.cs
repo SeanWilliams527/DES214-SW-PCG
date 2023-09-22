@@ -200,7 +200,7 @@ public class PCG : MonoBehaviour
             if (PercentRoll(10))
                 Branches.Enqueue(cursor);
             // Randomly place a room
-            if (PercentRoll(5))
+            if (PercentRoll(8))
             {
                 // If we successfully create room, stop corridoring
                 if (MakeRoom(cursor, direction))
