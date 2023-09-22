@@ -143,6 +143,8 @@ public class PCG : MonoBehaviour
             // Start corridoring in random direction
             bool result;
             if (PercentRoll(5))
+                result = MakeOutcoveCorridoor();
+            else if (PercentRoll(8))
                 result = MakeSnakeCorridor();
             else
                 result = MakeCorridor();
@@ -192,10 +194,10 @@ public class PCG : MonoBehaviour
             SpawnTile(cursor.x, cursor.y);
 
             // Randomly place branches
-            if (PercentRoll(20))
+            if (PercentRoll(10))
                 Branches.Enqueue(cursor);
             // Randomly place a room
-            if (PercentRoll(10))
+            if (PercentRoll(5))
             {
                 // If we successfully create room, stop corridoring
                 if (MakeRoom(cursor, direction))
@@ -306,29 +308,44 @@ public class PCG : MonoBehaviour
     bool MakeOutcoveCorridoor()
     {
         // ---------------- Outcove Variables ---------------------
-        int minLength = 20;
-        int maxLength = 6;
+        int minLength = 6;
+        int maxLength = 20;
 
-        int roomChance;
+        int roomChance = 5;
+        int branchChance = 5;
         // --------------------------------------------------------
 
         List<Vector2Int> possibleDirections = CorridorGetPossibleDirections();
         if (possibleDirections.Count == 0)
             return false;  // No directions to go
         Vector2Int dir = possibleDirections[DieRoll(possibleDirections.Count) - 1];
+        // Corridor will have outcoves that go side to side
+        Vector2Int side1 = InvertVector(dir);
+        Vector2Int side2 = side1 * -1;
         int length = RandInt(minLength, maxLength);
 
         bool makeOutcove = false;  // Should we make an outcove on this step?
         // Make a corridor with alternating skinny and outcove sections
         for (int i = 0; i < length; i++)
         {
+            // Outcove corridor will trample over anything in its way
+            // Only check if going out of bounds
+            if (IsOutOfBounds(cursor + dir))
+                return false; // Cannot continue
+
+            // Move cursor forward
+            cursor += dir;
+            SpawnTile(cursor);
+            // Make outcove
             if (makeOutcove)
             {
+                SpawnTile(cursor + side1);
+                SpawnTile(cursor + side2);
 
-            }
-            else
-            {
-
+                if (PercentRoll(branchChance))
+                    Branches.Enqueue(cursor + side1);
+                if (PercentRoll(branchChance))
+                    Branches.Enqueue(cursor + side2);
             }
 
             makeOutcove = !makeOutcove;
@@ -417,25 +434,6 @@ public class PCG : MonoBehaviour
             }
         }
 
-        // Roll for exit on each wall
-        /*
-        int exitChance = 60;
-        if (PercentRoll(exitChance))  // Roll for exit left
-        {
-            Branches.Enqueue(new Vector2Int(room.Left, RandInt(room.Down, room.Up)));
-        }
-        if (PercentRoll(exitChance))  // Roll for exit right
-        {
-            Branches.Enqueue(new Vector2Int(room.Right, RandInt(room.Down, room.Up)));
-        }
-        if (PercentRoll(exitChance))  // Roll for exit Up
-        {
-            Branches.Enqueue(new Vector2Int(RandInt(room.Left, room.Right), room.Up));
-        }
-        if (PercentRoll(exitChance))  // Roll for exit Down
-        {
-            Branches.Enqueue(new Vector2Int(RandInt(room.Left, room.Right), room.Down));
-        }
 
         // Roll to modify room
 
@@ -447,16 +445,56 @@ public class PCG : MonoBehaviour
             RoomAddCrossPillars(room);
         else if (roll == 2 || roll == 3 || roll == 4)
             RoomAddCourtYardWalls(room);
-         */
 
-        RoomMakeRound(room);
+        if (PercentRoll(35))
+            RoomMakeRound(room);
+
+        // Roll for exit on each wall
+        int exitChance = 60;
+        if (PercentRoll(exitChance))  // Roll for exit left
+        {
+            RoomAddExit(room, N);
+        }
+        if (PercentRoll(exitChance))  // Roll for exit right
+        {
+            RoomAddExit(room, E);
+        }
+        if (PercentRoll(exitChance))  // Roll for exit Up
+        {
+            RoomAddExit(room, S);
+        }
+        if (PercentRoll(exitChance))  // Roll for exit Down
+        {
+            RoomAddExit(room, W);
+        }
 
         return true;  // Successfully created room
     }
 
     void RoomAddExit(Room room, Vector2Int side)
     {
+        // Decide location of exit
+        Vector2Int exit = new Vector2Int(0, 0);
+        if (side == N)
+            exit = new Vector2Int(room.Left, RandInt(room.Down, room.Up));
+        else if (side == E)
+            exit = new Vector2Int(room.Right, RandInt(room.Down, room.Up));
+        else if (side == S)
+            exit = new Vector2Int(RandInt(room.Left, room.Right), room.Up);
+        else if (side == W)
+            exit = new Vector2Int(RandInt(room.Left, room.Right), room.Down);
 
+        Branches.Enqueue(exit);
+
+        // Make sure player can reach exitr
+        cursor = exit;
+        Vector2Int opDir = -1 * side;
+        // Make exit reachable
+        while(!IsTileReachable(cursor))
+        {
+            cursor += opDir;
+            SpawnTile(cursor);
+        }
     }
 
     void RoomMakeRound(Room room)
@@ -834,6 +872,22 @@ public class PCG : MonoBehaviour
         }
 
         return true;
+    }
+
+    // Can this tile be reached by the player from another tile
+    bool IsTileReachable(Vector2Int pos)
+    {
+        int reachableFrom = 4;  // How many directions is this reachable from
+        if (IsOutOfBounds(pos + N) || GetTile(pos + N) == null)
+            reachableFrom--;
+        if (IsOutOfBounds(pos + S) || GetTile(pos + S) == null)
+            reachableFrom--;
+        if (IsOutOfBounds(pos + E) || GetTile(pos + E) == null)
+            reachableFrom--;
+        if (IsOutOfBounds(pos + W) || GetTile(pos + W) == null)
+            reachableFrom--;
+
+        return (reachableFrom > 0);
     }
 
 
