@@ -162,6 +162,9 @@ public class PCG : MonoBehaviour
         //Fill all empty tiles with walls
         FillWithWalls();
 
+        // Make sure the player cant escape by making perimeter wall
+        MakePerimeterWall();
+
         //Do an initial cinematic pan (if desired)
         InitialCinematicPan();
     }
@@ -970,6 +973,29 @@ public class PCG : MonoBehaviour
         for (int x = -MaxMapSize / 2; x <= MaxMapSize / 2; x++)
             for (int y = -MaxMapSize / 2; y <= MaxMapSize / 2; y++)
                 SpawnWall(x, y);
+    }
+
+    // Spawn walls around the perimeter of the map
+    void MakePerimeterWall()
+    {
+        // Values of where the wall should be placed
+        int mapUpEdge = (MaxMapSize / 2) + 1;
+        int mapDownEdge = (-MaxMapSize / 2) - 1;
+        int mapRightEdge = (MaxMapSize / 2) + 1;
+        int mapLeftEdge = (-MaxMapSize / 2) - 1;
+
+        // Construct North wall from left to right
+        for (int x = mapLeftEdge; x <= mapRightEdge; x++)
+            Spawn("wall", x, mapUpEdge);
+        // Construct South wall from left to right
+        for (int x = mapLeftEdge; x <= mapRightEdge; x++)
+            Spawn("wall", x, mapDownEdge);
+        // Construct West wall from bottom to top
+        for (int y = mapDownEdge; y <= mapUpEdge; y++)
+            Spawn("wall", mapLeftEdge, y);
+        // Construct East wall from bottom to top
+        for (int y = mapDownEdge; y <= mapUpEdge; y++)
+            Spawn("wall", mapRightEdge, y);
     }
 
     //Spawn any object
