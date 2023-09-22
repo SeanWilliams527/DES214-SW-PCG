@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartingHealth: 1
-  StartingSpeed: 100
+  StartingSpeed: 3
   SilverKeys: 0
   GoldKeys: 0
   CinematicMode: 0
@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb3aabeb6a3189a4e937c3e3fa76e90d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Weight: 0
+  Weight: 2
   Padding: 10
   Cinematic: 0
 --- !u!1001 &1772664446125870452
@@ -228,12 +228,12 @@ PrefabInstance:
     - target: {fileID: 7021916691107445995, guid: 4ec6088d51e43b94dabad0dd3b396d8f,
         type: 3}
       propertyPath: BulletRange
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7021916691107445995, guid: 4ec6088d51e43b94dabad0dd3b396d8f,
         type: 3}
       propertyPath: BulletSpeed
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7021916691107445995, guid: 4ec6088d51e43b94dabad0dd3b396d8f,
         type: 3}

@@ -669,6 +669,37 @@ public class PCG : MonoBehaviour
         FillWithWalls();
     }
 
+    // Generate a room with one custom enemy
+    void GenerateEnemyRoom(int room)
+    {
+        //Clear any game object first
+        ClearLevel();
+
+        //Create the camera
+        SpawnCamera();
+
+        //Create the starting tile
+        SpawnTile(0, 0);
+        Spawn("player", 0.0f, 0.0f);
+
+        //Create a square room
+        //Note that already placed tiles will not be over-written
+        for (int x = -3; x <= 3; x++)
+            for (int y = -3; y <= 3; y++)
+                SpawnTile(x, y);
+
+        // Spawn enemy
+        Spawn("enemy", 2.5f, 2.5f);
+        Spawn("fast", 0.0f, 2.5f);
+        Spawn("tank", 2.5f, 0.0f);
+        Spawn("ultra", -2.5f, 2.5f);
+        Spawn("spread", -2.5f, -2.5f);
+        Spawn("boss", 0.0f, -2.5f);
+
+        //Fill all empty tiles with walls
+        FillWithWalls();
+    }
+
     //Clear the entire level except for the PCG object
     void ClearLevel()
     {
@@ -1069,6 +1100,7 @@ public class PCG : MonoBehaviour
 
         //Load all the enemy prefabs
         Prefabs.Add("enemy", Resources.Load<GameObject>("Prefabs/Enemies/BaseEnemy"));
+        Prefabs.Add("areaEnemy", Resources.Load<GameObject>("Prefabs/Enemies/AreaEnemy"));
         Prefabs.Add("fast", Resources.Load<GameObject>("Prefabs/Enemies/FastEnemy"));
         Prefabs.Add("spread", Resources.Load<GameObject>("Prefabs/Enemies/SpreadEnemy"));
         Prefabs.Add("tank", Resources.Load<GameObject>("Prefabs/Enemies/TankEnemy"));
