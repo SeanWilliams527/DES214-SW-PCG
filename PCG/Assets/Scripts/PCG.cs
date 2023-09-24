@@ -114,6 +114,24 @@ public class PCG : MonoBehaviour
             GenerateCustomRoom();
             return;
         }
+
+        // Press number to generate enemy test room
+        if (Input.GetKey(KeyCode.Alpha1))
+            GenerateEnemyRoom(1);
+        if (Input.GetKey(KeyCode.Alpha2))
+            GenerateEnemyRoom(2);
+        if (Input.GetKey(KeyCode.Alpha3))
+            GenerateEnemyRoom(3);
+        if (Input.GetKey(KeyCode.Alpha4))
+            GenerateEnemyRoom(4);
+        if (Input.GetKey(KeyCode.Alpha5))
+            GenerateEnemyRoom(5);
+        if (Input.GetKey(KeyCode.Alpha6))
+            GenerateEnemyRoom(6);
+        if (Input.GetKey(KeyCode.Alpha7))
+            GenerateEnemyRoom(7);
+        if (Input.GetKey(KeyCode.Alpha8))
+            GenerateEnemyRoom(8);
     }
 
     //Generate an actual level to play
@@ -689,12 +707,18 @@ public class PCG : MonoBehaviour
                 SpawnTile(x, y);
 
         // Spawn enemy
-        Spawn("enemy", 2.5f, 2.5f);
-        Spawn("fast", 0.0f, 2.5f);
-        Spawn("tank", 2.5f, 0.0f);
-        Spawn("ultra", -2.5f, 2.5f);
-        Spawn("spread", -2.5f, -2.5f);
-        Spawn("boss", 0.0f, -2.5f);
+        if (room == 1)
+            Spawn("enemy", 0.0f, 2.5f);
+        if (room == 2)
+            Spawn("fast", 0.0f, 2.5f);
+        if (room == 3)
+            Spawn("tank", 0.0f, 2.5f);
+        if (room == 4)
+            Spawn("ultra", 0.0f, 2.5f);
+        if (room == 5)
+            Spawn("spread", 0.0f, 2.5f);
+        if (room == 6)
+            Spawn("boss", 0.0f, -2.5f);
 
         //Fill all empty tiles with walls
         FillWithWalls();

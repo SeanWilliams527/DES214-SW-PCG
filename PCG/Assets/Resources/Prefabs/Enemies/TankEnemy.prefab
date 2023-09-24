@@ -141,9 +141,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 1
   StartingHealth: 1
-  AggroRange: 1
+  AggroRange: 10
   WanderInterval: 4
   WanderChance: 0.3
+  DropChance: 0.35
   Aggroed: 0
   Wander: 0
   Player: {fileID: 0}
