@@ -635,7 +635,20 @@ public class PCG : MonoBehaviour
         SpawnTile(0, 0);
         Spawn("player", 0.0f, 0.0f);
 
-        //Create a square room
+        //Create a square room for enemies
+        //Note that already placed tiles will not be over-written
+        for (int x = -3; x <= 3; x++)
+            for (int y = -3; y <= 3; y++)
+                SpawnTile(x, y);
+
+        SpawnTile(0, -4);
+        SpawnTile(0, -5);
+
+        for (int x = -3; x <= 3; x++)
+            for (int y = -12; y <= -6; y++)
+                SpawnTile(x, y);
+
+        //Create a square room for items
         //Note that already placed tiles will not be over-written
         for (int x = -3; x <= 3; x++)
             for (int y = -3; y <= 3; y++)
@@ -712,13 +725,15 @@ public class PCG : MonoBehaviour
         if (room == 2)
             Spawn("fast", 0.0f, 2.5f);
         if (room == 3)
-            Spawn("tank", 0.0f, 2.5f);
+            Spawn("areaEnemy", 0.0f, 2.5f);
         if (room == 4)
-            Spawn("ultra", 0.0f, 2.5f);
+            Spawn("tank", 0.0f, 2.5f);
         if (room == 5)
             Spawn("spread", 0.0f, 2.5f);
         if (room == 6)
-            Spawn("boss", 0.0f, -2.5f);
+            Spawn("ultra", 0.0f, 2.5f);
+        if (room == 8)
+            Spawn("boss", 0.0f, 2.5f);
 
         //Fill all empty tiles with walls
         FillWithWalls();

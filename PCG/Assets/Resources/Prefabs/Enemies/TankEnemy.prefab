@@ -140,8 +140,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 1
-  StartingHealth: 1
-  AggroRange: 10
+  StartingHealth: 5
+  AggroRange: 15
   WanderInterval: 4
   WanderChance: 0.3
   DropChance: 0.35
@@ -299,12 +299,12 @@ PrefabInstance:
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: BulletRange
-      value: 1
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: BulletSpeed
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}

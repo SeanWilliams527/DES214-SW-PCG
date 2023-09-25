@@ -141,11 +141,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cb435cdb91a54544888208bc71f98fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 1
-  StartingHealth: 1
-  AggroRange: 1
+  Speed: 2
+  StartingHealth: 20
+  AggroRange: 15
   WanderInterval: 4
   WanderChance: 0.3
+  DropChance: 0.35
   Aggroed: 0
   Wander: 0
   Player: {fileID: 0}
@@ -175,17 +176,17 @@ PrefabInstance:
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: BulletRange
-      value: 1
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: BulletSpeed
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: ShotCooldown
-      value: 3
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
@@ -195,12 +196,12 @@ PrefabInstance:
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: BulletsPerShot
-      value: 12
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: BulletSpreadAngle
-      value: 30
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505579, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
@@ -280,7 +281,7 @@ PrefabInstance:
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: BulletRange
-      value: 1
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
@@ -290,7 +291,7 @@ PrefabInstance:
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: ShotCooldown
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
@@ -300,12 +301,12 @@ PrefabInstance:
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: BulletsPerShot
-      value: 8
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: BulletSpreadAngle
-      value: 15
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505579, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
