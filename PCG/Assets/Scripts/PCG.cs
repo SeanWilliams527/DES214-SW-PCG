@@ -31,6 +31,39 @@ public class PCG : MonoBehaviour
         public Vector2Int entrance;
     };
 
+    // Generation mode
+    struct Mode
+    {
+        // Room size chances
+        public int smallRoomChance;
+        public int mediumRoomChance;
+        public int largeRoomChance;
+        // Room variation chances
+        public int roomMiddlePillarChance;
+        public int roomCrossPillarChance;
+        public int roomCourtyardWallChance;
+        public int roomRoundedChance;
+        // Room exit chances
+        public int roomExitChance;
+
+        // Corridor type chances
+        public int normalCorridorChance;
+        public int snakeCorridorChance;
+        public int outcoveCorridorChance;
+        // Corridor length chances
+        public int shortCorridorChance;
+        public int medCorridorChance;
+        public int longCorridorChance;
+        // Corridor room spawning chances
+        public int normalCorridorRoomchance;
+        public int snakeCorridorRoomchance;
+        public int outcoveCorridorRoomchance;
+        // Corridor branch chances
+        public int normalCorridorBranchchance;
+        public int snakeCorridorBranchchance;
+        public int outcoveCorridorBranchchance;
+    };
+
     //////////////////////////////////////////////////////////////////////////
     // DESIGNER ADJUSTABLE VALUES
     //////////////////////////////////////////////////////////////////////////
@@ -70,6 +103,9 @@ public class PCG : MonoBehaviour
 
         //Load all the prefabs into the prefabs dictionary
         LoadPrefabs();
+
+        // Make all Generation Modes
+        InitializeGenerationModes();
 
         //Create the tile map
         if (MaxMapSize % 2 == 0)
@@ -1164,6 +1200,11 @@ public class PCG : MonoBehaviour
         Prefabs.Add("cameratarget", Resources.Load<GameObject>("Prefabs/Camera/WeightedCameraTarget"));
         Prefabs.Add("cinematicanchor", Resources.Load<GameObject>("Prefabs/Camera/CinematicAnchor"));
         Prefabs.Add("uicanvas", Resources.Load<GameObject>("Prefabs/Player/UICanvas"));
+    }
+
+    void InitializeGenerationModes()
+    {
+
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
