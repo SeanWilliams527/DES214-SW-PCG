@@ -633,7 +633,7 @@ public class PCG : MonoBehaviour
 
         //Create the starting tile
         SpawnTile(0, 0);
-        Spawn("player", 0.0f, 0.0f);
+        Spawn("player", 0.0f, -8.0f);
 
         //Create a square room for enemies
         //Note that already placed tiles will not be over-written
@@ -655,22 +655,24 @@ public class PCG : MonoBehaviour
                 SpawnTile(x, y);
 
         //Put a bunch of pick-ups around the player
-        Spawn("heart", 0.5f, 0.5f);
-        Spawn("healthboost", 0.0f, 0.5f);
-        Spawn("speedboost", 0.5f, 0.0f);
-        Spawn("shotboost", 0.5f, -0.5f);
-        Spawn("heart", -0.5f, -0.5f);
-        Spawn("healthboost", 0.0f, -0.5f);
-        Spawn("speedboost", -0.5f, 0.0f);
-        Spawn("shotboost", -0.5f, 0.5f);
+        Spawn("heart", 0.5f, 0.5f - 8.0f);
+        Spawn("healthboost", 0.0f, 0.5f - 8.0f);
+        Spawn("speedboost", 0.5f, 0.0f - 8.0f);
+        Spawn("shotboost", 0.5f, -0.5f - 8.0f);
+        Spawn("heart", -0.5f, -0.5f - 8.0f);
+        Spawn("healthboost", 0.0f, -0.5f - 8.0f);
+        Spawn("speedboost", -0.5f, 0.0f - 8.0f);
+        Spawn("shotboost", -0.5f, 0.5f - 8.0f);
 
         //Add some test enemies
         Spawn("enemy", 2.5f, 2.5f);
-        Spawn("fast", 0.0f, 2.5f);
+        Spawn("fast", 0.0f, -2.5f);
+        Spawn("areaEnemy", 0.0f, -1.5f);
         Spawn("tank", 2.5f, 0.0f);
         Spawn("ultra", -2.5f, 2.5f);
         Spawn("spread", -2.5f, -2.5f);
-        Spawn("boss", 0.0f, -2.5f);
+        Spawn("ultraArea", 0.0f, 0.0f);
+        Spawn("boss", 0.0f, 2.5f);
 
         //Don't forget the exit...
         Spawn("portal", 3.0f, -3.0f);
@@ -732,6 +734,8 @@ public class PCG : MonoBehaviour
             Spawn("spread", 0.0f, 2.5f);
         if (room == 6)
             Spawn("ultra", 0.0f, 2.5f);
+        if (room == 7)
+            Spawn("ultraArea", 0.0f, 2.5f);
         if (room == 8)
             Spawn("boss", 0.0f, 2.5f);
 
@@ -1144,6 +1148,7 @@ public class PCG : MonoBehaviour
         Prefabs.Add("spread", Resources.Load<GameObject>("Prefabs/Enemies/SpreadEnemy"));
         Prefabs.Add("tank", Resources.Load<GameObject>("Prefabs/Enemies/TankEnemy"));
         Prefabs.Add("ultra", Resources.Load<GameObject>("Prefabs/Enemies/UltraEnemy"));
+        Prefabs.Add("ultraArea", Resources.Load<GameObject>("Prefabs/Enemies/UltraAreaEnemy"));
         Prefabs.Add("boss", Resources.Load<GameObject>("Prefabs/Enemies/BossEnemy"));
 
         //Load all the pick-ups
