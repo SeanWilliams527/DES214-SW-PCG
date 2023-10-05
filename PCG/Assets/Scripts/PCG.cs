@@ -34,6 +34,8 @@ public class PCG : MonoBehaviour
     // Generation mode
     struct Mode
     {
+        // Chance for room to spawn
+        public int roomChance;
         // Room size chances
         public int smallRoomChance;
         public int mediumRoomChance;
@@ -188,8 +190,10 @@ public class PCG : MonoBehaviour
 
         //Create the starting tile
         SpawnTile(0, 0);
+        GenerateStartingRooms();
         Spawn("player", 0.0f, 0.0f);
         cursor.Set(0, 0);  // Set cursor to starting tile
+
 
         // Main Generation code
         while (true)
@@ -528,6 +532,19 @@ public class PCG : MonoBehaviour
         return true;  // Successfully created room
     }
 
+    // Fill an area with floor tiles
+    // Bottom left corner of room will be the cursor
+    void FillAreaWithTile(int width, int height)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                SpawnTile(cursor.x + x, cursor.y + y);
+            }
+        }
+    }
+
     void RoomAddExit(Room room, Vector2Int side)
     {
         // Decide location of exit
@@ -551,66 +568,6 @@ public class PCG : MonoBehaviour
         {
             cursor += opDir;
             SpawnTile(cursor);
-        }
-    }
-
-    void RoomMakeRound(Room room)
-    {
-        // Minimum dimensions for room to qualify for rounding
-        int RoomwMin = 6;
-        int RoomhMin = 6;
-        if (room.w < RoomwMin || room.h < RoomhMin)
-            return;  // Room is too small!
-
-        // Radius of the rounded corner
-        int radius = Math.Min(room.h, room.w) / 4;
-
-        // Round the NW corner
-        cursor.x = room.Left; cursor.y = room.Up;
-        for (int i = 0; i < radius; i++)
-        {
-            int height = radius - i;
-            for (int h = 0; h < height; h++)
-                DeleteTile(cursor + (h * S));
-
-            // Continue cursor left or right
-            cursor += E;
-        }
-
-        // Round the NE corner
-        cursor.x = room.Right; cursor.y = room.Up;
-        for (int i = 0; i < radius; i++)
-        {
-            int height = radius - i;
-            for (int h = 0; h < height; h++)
-                DeleteTile(cursor + (h * S));
-
-            // Continue cursor left or right
-            cursor += W;
-        }
-
-        // Round the SW corner
-        cursor.x = room.Left; cursor.y = room.Down;
-        for (int i = 0; i < radius; i++)
-        {
-            int height = radius - i;
-            for (int h = 0; h < height; h++)
-                DeleteTile(cursor + (h * N));
-
-            // Continue cursor left or right
-            cursor += E;
-        }
-
-        // Round the SE corner
-        cursor.x = room.Right; cursor.y = room.Down;
-        for (int i = 0; i < radius; i++)
-        {
-            int height = radius - i;
-            for (int h = 0; h < height; h++)
-                DeleteTile(cursor + (h * N));
-
-            // Continue cursor left or right
-            cursor += W;
         }
     }
 
@@ -777,6 +734,30 @@ public class PCG : MonoBehaviour
 
         //Fill all empty tiles with walls
         FillWithWalls();
+    }
+
+    // Generate starting rooms at the 4 corners of the map
+    void GenerateStartingRooms()
+    {
+        // Dimensions of each starting room
+        int roomWidth = 3;
+        int roomHeight = 3;
+
+        // Calculate edge of map
+        int halfMapSize = MaxMapSize / 2;
+
+        // Generate NW room
+        cursor.x = -halfMapSize; cursor.y = halfMapSize - (roomHeight - 1);
+        FillAreaWithTile(roomWidth, roomHeight);
+        // Generate NE room
+        cursor.x = halfMapSize - (roomWidth - 1); cursor.y = halfMapSize - (roomHeight - 1);
+        FillAreaWithTile(roomWidth, roomHeight);
+        // Generate SW room
+        cursor.x = -halfMapSize; cursor.y = -halfMapSize;
+        FillAreaWithTile(roomWidth, roomHeight);
+        // Generate SE room
+        cursor.x = halfMapSize - (roomWidth - 1); cursor.y = -halfMapSize;
+        FillAreaWithTile(roomWidth, roomHeight);
     }
 
     //Clear the entire level except for the PCG object
@@ -962,6 +943,67 @@ public class PCG : MonoBehaviour
         for (int i = 0; i < wallWidth; i++)
         {
             DeleteTile(cursor);
+            cursor += W;
+        }
+    }
+
+    // Make a room rounded
+    void RoomMakeRound(Room room)
+    {
+        // Minimum dimensions for room to qualify for rounding
+        int RoomwMin = 6;
+        int RoomhMin = 6;
+        if (room.w < RoomwMin || room.h < RoomhMin)
+            return;  // Room is too small!
+
+        // Radius of the rounded corner
+        int radius = Math.Min(room.h, room.w) / 4;
+
+        // Round the NW corner
+        cursor.x = room.Left; cursor.y = room.Up;
+        for (int i = 0; i < radius; i++)
+        {
+            int height = radius - i;
+            for (int h = 0; h < height; h++)
+                DeleteTile(cursor + (h * S));
+
+            // Continue cursor left or right
+            cursor += E;
+        }
+
+        // Round the NE corner
+        cursor.x = room.Right; cursor.y = room.Up;
+        for (int i = 0; i < radius; i++)
+        {
+            int height = radius - i;
+            for (int h = 0; h < height; h++)
+                DeleteTile(cursor + (h * S));
+
+            // Continue cursor left or right
+            cursor += W;
+        }
+
+        // Round the SW corner
+        cursor.x = room.Left; cursor.y = room.Down;
+        for (int i = 0; i < radius; i++)
+        {
+            int height = radius - i;
+            for (int h = 0; h < height; h++)
+                DeleteTile(cursor + (h * N));
+
+            // Continue cursor left or right
+            cursor += E;
+        }
+
+        // Round the SE corner
+        cursor.x = room.Right; cursor.y = room.Down;
+        for (int i = 0; i < radius; i++)
+        {
+            int height = radius - i;
+            for (int h = 0; h < height; h++)
+                DeleteTile(cursor + (h * N));
+
+            // Continue cursor left or right
             cursor += W;
         }
     }
