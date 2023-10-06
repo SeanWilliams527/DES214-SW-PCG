@@ -29,7 +29,9 @@ public class PCG : MonoBehaviour
         public int Down;
 
         public Vector2Int entrance;
+        public RoomType type;
     };
+    enum RoomType { small, medium, large };
 
     // Room Sizing
     int minSmallRoomSize = 4; int maxSmallRoomSize = 6;
@@ -73,6 +75,19 @@ public class PCG : MonoBehaviour
         public int snakeCorridorBranchchance;
         public int outcoveCorridorBranchchance;
 
+        // The threat level of the each room
+        public int minThreatSmallRooms; 
+        public int maxThreatSmallRooms;
+        public int minThreatMediumRooms;
+        public int maxThreatMediumRooms;
+        public int minThreatLargeRooms;
+        public int maxThreatLargeRooms;
+        // Enemy Spawning chances
+        public int trivialEnemySpawnChance;
+        public int easyEnemySpawnChance;
+        public int mediumEnemySpawnChance;
+        public int hardEnemySpawnChance;
+
         // Color for debug mode
         public Color debugColor;
     };
@@ -91,6 +106,12 @@ public class PCG : MonoBehaviour
     float genDev1Radius;
     [SerializeField]
     float genDev2Radius;
+
+    // Enemy Spawning
+    int trivialEnemyThreat = 1;
+    int easyEnemyThreat = 2;
+    int mediumEnemyThreat = 4;
+    int hardEnemyThreat = 8;
 
 
     //////////////////////////////////////////////////////////////////////////
@@ -604,6 +625,9 @@ public class PCG : MonoBehaviour
             RoomAddExit(room, W);
         }
 
+        // Populate the room with enemies
+        RoomPopulateEnemies(room);
+
         return true;  // Successfully created room
     }
 
@@ -653,6 +677,15 @@ public class PCG : MonoBehaviour
         room.w = w;
         room.h = h;
         room.entrance = entrance;
+
+        // Determine size type of room
+        int largestDimension = Math.Max(w, h);
+        if (largestDimension <= maxSmallRoomSize)
+            room.type = RoomType.small;
+        else if (largestDimension <= maxMediumRoomSize)
+            room.type = RoomType.medium;
+        else
+            room.type = RoomType.large;
 
         // Entrance is on bottom wall
         if (dir == N)
@@ -1093,6 +1126,131 @@ public class PCG : MonoBehaviour
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //// --- ROOM ENEMY SPAWNING ---
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    void RoomPopulateEnemies(Room room)
+    {
+        // Determine the threat level of the room
+        int threat;
+        if (room.type == RoomType.small)
+            threat = RandInt(CurrentGenerationMode.minThreatSmallRooms, CurrentGenerationMode.maxThreatSmallRooms);
+        else if (room.type == RoomType.medium)
+            threat = RandInt(CurrentGenerationMode.minThreatMediumRooms, CurrentGenerationMode.maxThreatMediumRooms);
+        else
+            threat = RandInt(CurrentGenerationMode.minThreatLargeRooms, CurrentGenerationMode.maxThreatLargeRooms);
+
+        // Populate the room with enemies
+        int tries = 3;  // We have three tries to not overthreat the room
+        int threatAmountLeft = threat;
+        while (tries > 0)
+        {
+            // Determine which enemy to spawn
+            int[] enemyChances = {CurrentGenerationMode.trivialEnemySpawnChance,
+                CurrentGenerationMode.easyEnemySpawnChance,
+                CurrentGenerationMode.mediumEnemySpawnChance,
+                CurrentGenerationMode.hardEnemySpawnChance };
+            bool didSpawnEnemy = false;
+            switch (RandomOutcome(enemyChances))
+            {
+                // Try to spawn the enemy
+                case 0: 
+                    didSpawnEnemy = SpawnEnemy(room, 0, threatAmountLeft);
+                    // Decrement the threat left
+                    if (didSpawnEnemy)
+                        threatAmountLeft -= trivialEnemyThreat;
+                    break;
+                case 1: 
+                    didSpawnEnemy = SpawnEnemy(room, 1, threatAmountLeft);
+                    // Decrement the threat left
+                    if (didSpawnEnemy)
+                        threatAmountLeft -= easyEnemyThreat;
+                    break;
+                case 2: 
+                    didSpawnEnemy = SpawnEnemy(room, 2, threatAmountLeft);
+                    // Decrement the threat left
+                    if (didSpawnEnemy)
+                        threatAmountLeft -= mediumEnemyThreat;
+                    break;
+                case 3: 
+                    didSpawnEnemy = SpawnEnemy(room, 3, threatAmountLeft);
+                    // Decrement the threat left
+                    if (didSpawnEnemy)
+                        threatAmountLeft -= hardEnemyThreat;
+                    break;
+            }
+
+            // If we failed to spawn an enemy
+            if (!didSpawnEnemy)
+                tries--;
+        }
+    }
+
+    // Spawn an enemy of a certain type in a random location of the room
+    bool SpawnEnemy(Room room, int enemyType, int threatAmountLeft)
+    {
+        // Spawn trivial enemy
+        if (enemyType == 0)
+        {
+            // Ensure we dont run out of threat
+            if (threatAmountLeft - trivialEnemyThreat < 0)
+                return false;
+            Vector2Int pos = RoomGetRandomTile(room);
+            Spawn("enemy", pos.x, pos.y);
+        }
+
+        // Spawn easy enemy
+        else if (enemyType == 1)
+        {
+            // Ensure we dont run out of threat
+            if (threatAmountLeft - easyEnemyThreat < 0)
+                return false;
+            Vector2Int pos = RoomGetRandomTile(room);
+            // Determine which easy enemy to spawn
+            int roll = DieRoll(2);
+            if (roll == 1)
+                Spawn("areaEnemy", pos.x, pos.y);
+            else
+                Spawn("fast", pos.x, pos.y);
+        }
+
+        // Spawn medium enemy
+        else if (enemyType == 2)
+        {
+            // Ensure we dont run out of threat
+            if (threatAmountLeft - easyEnemyThreat < 0)
+                return false;
+            Vector2Int pos = RoomGetRandomTile(room);
+            // Determine which medium enemy to spawn
+            int roll = DieRoll(2);
+            if (roll == 1)
+                Spawn("tank", pos.x, pos.y);
+            else
+                Spawn("spread", pos.x, pos.y);
+        }
+
+        // Spawn hard enemy
+        else if (enemyType == 3)
+        {
+            // Ensure we dont run out of threat
+            if (threatAmountLeft - easyEnemyThreat < 0)
+                return false;
+            Vector2Int pos = RoomGetRandomTile(room);
+            // Determine which hard enemy to spawn
+            int roll = DieRoll(2);
+            if (roll == 1)
+                Spawn("ultra", pos.x, pos.y);
+            else
+                Spawn("ultraArea", pos.x, pos.y);
+        }
+
+        // Successfully spawned an enemy
+        return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //// --- AREA CHECKING ---
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1126,6 +1284,26 @@ public class PCG : MonoBehaviour
             reachableFrom--;
 
         return (reachableFrom > 0);
+    }
+
+    Vector2Int RoomGetRandomTile(Room room)
+    {
+        // Generate coordinates
+        int x = RandInt(room.Left, room.Right);
+        int y = RandInt(room.Down, room.Up);
+        // Check if a floor tile is there
+        GameObject tile = GetTile(x, y);
+
+        while (tile != null)
+        {
+            // Generate coordinates
+            x = RandInt(room.Left, room.Right);
+            y = RandInt(room.Down, room.Up);
+            // Check if a floor tile is there
+            tile = GetTile(x, y);
+        }
+
+        return new Vector2Int(x, y);
     }
 
 
@@ -1267,6 +1445,7 @@ public class PCG : MonoBehaviour
         RoomMakeRound(room);
 
         // Spawn the boss
+        Spawn("boss", 0.0f, 0.0f);
     }
 
     //Spawn any object
@@ -1410,6 +1589,18 @@ public class PCG : MonoBehaviour
         GenerationModeSetup.normalCorridorBranchchance = 50;
         GenerationModeSetup.snakeCorridorBranchchance = 70;
         GenerationModeSetup.outcoveCorridorBranchchance = 70;
+        // The threat level of the each room
+        GenerationModeSetup.minThreatSmallRooms = 1;
+        GenerationModeSetup.maxThreatSmallRooms = 3;
+        GenerationModeSetup.minThreatMediumRooms = 0;
+        GenerationModeSetup.maxThreatMediumRooms = 0;
+        GenerationModeSetup.minThreatLargeRooms = 0;
+        GenerationModeSetup.maxThreatLargeRooms = 0;
+        // Enemy Spawning chances
+        GenerationModeSetup.trivialEnemySpawnChance = 100;
+        GenerationModeSetup.easyEnemySpawnChance = 0;
+        GenerationModeSetup.mediumEnemySpawnChance = 0;
+        GenerationModeSetup.hardEnemySpawnChance = 0;
         // Debug color
         GenerationModeSetup.debugColor = Color.white;
 
