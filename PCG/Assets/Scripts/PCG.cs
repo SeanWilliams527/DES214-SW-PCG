@@ -31,6 +31,16 @@ public class PCG : MonoBehaviour
         public Vector2Int entrance;
     };
 
+    // Room Sizing
+    int minSmallRoomSize = 4; int maxSmallRoomSize = 6;
+    int minMediumRoomSize = 8; int maxMediumRoomSize = 16;
+    int minLargeRoomSize = 18; int maxLargeRoomSize = 26;
+
+    // Corridor Sizing
+    int minShortCorridorSize = 1; int maxShortCorridorSize = 6;
+    int minMediumCorridorSize = 7; int maxMediumCorridorSize = 12;
+    int minLongCorridorSize = 13; int maxLongCorridorSize = 23;
+
     // Generation mode
     struct Mode
     {
@@ -198,34 +208,26 @@ public class PCG : MonoBehaviour
         SpawnTile(0, 0);
         GenerateStartingRooms();
         Spawn("player", 0.0f, 0.0f);
+
+        CurrentGenerationMode = GenerationModeSetup;
+
         cursor = Branches.Dequeue();
-
-        int[] outcomes = { 0, 60, 10 };
-        int[] score = new int[outcomes.Length + 1];
-        for (int i = 0; i < 1000; i++)
-        {
-            int outcome = RandomOutcome(outcomes);
-            score[outcome]++;
-        }
-
-        for (int i = 0; i < score.Length; i++)
-        {
-            Debug.Log("Outcome " + i + ": " + score[i]);
-        }
-
 
         // Main Generation code
         while (true)
         {
             // Start corridoring in random direction
-            bool result;
-
-            if (PercentRoll(5))
-                result = MakeOutcoveCorridoor();
-            else if (PercentRoll(8))
-                result = MakeSnakeCorridor();
-            else
-                result = MakeCorridor();
+            bool result = false;
+            // Roll for what corridor to use
+            int[] corridors = { CurrentGenerationMode.normalCorridorChance, CurrentGenerationMode.snakeCorridorChance, CurrentGenerationMode.outcoveCorridorChance };
+            int corridor = RandomOutcome(corridors);
+            switch (corridor)
+            {
+                case 0: result = MakeCorridor(); break;
+                case 1: result = MakeCorridor(); break;
+                case 2: result = MakeCorridor(); break;
+                default: Debug.LogError("Invalid Corridor Chances. Make sure chances to spawn each corridor add up to 100"); break;
+            }
 
             if (result == false) // We failed to make a corridor
             {
@@ -275,10 +277,10 @@ public class PCG : MonoBehaviour
             SpawnTile(cursor.x, cursor.y);
 
             // Randomly place branches
-            if (PercentRoll(10))
+            if (PercentRoll(CurrentGenerationMode.normalCorridorBranchchance))
                 Branches.Enqueue(cursor);
             // Randomly place a room
-            if (PercentRoll(8))
+            if (PercentRoll(CurrentGenerationMode.normalCorridorRoomchance))
             {
                 // If we successfully create room, stop corridoring
                 if (MakeRoom(cursor, direction))
@@ -479,10 +481,28 @@ public class PCG : MonoBehaviour
     bool MakeRoom(Vector2Int entrance, Vector2Int dir)
     {
         // Dimensions for rooms
-        int maxWidth = 26;
-        int maxHeight = 26;
-        int minWidth = 4;
-        int minHeight = 4;
+        int maxWidth = 0;
+        int maxHeight = 0;
+        int minWidth = 0;
+        int minHeight = 0;
+        // Determine if small, medium, or large room
+        int[] roomSize = { CurrentGenerationMode.smallRoomChance, CurrentGenerationMode.mediumRoomChance, CurrentGenerationMode.largeRoomChance };
+        switch (RandomOutcome(roomSize))
+        {
+            case 0: 
+                maxWidth = maxSmallRoomSize; maxHeight = maxSmallRoomSize;
+                minWidth = minSmallRoomSize; minHeight = minSmallRoomSize;
+                break;
+            case 1:
+                maxWidth = maxMediumRoomSize; maxHeight = maxMediumRoomSize;
+                minWidth = minMediumRoomSize; minHeight = minMediumRoomSize;
+                break;
+            case 2:
+                maxWidth = maxLargeRoomSize; maxHeight = maxLargeRoomSize;
+                minWidth = minLargeRoomSize; minHeight = minLargeRoomSize;
+                break;
+        }
+
 
         // Make room object
         int tries = 3;  // Number of attempts we have to make a room
@@ -1295,11 +1315,11 @@ public class PCG : MonoBehaviour
         GenerationModeSetup.medCorridorChance = 20;
         GenerationModeSetup.longCorridorChance = 0;
         // Corridor room spawning chances
-        GenerationModeSetup.normalCorridorRoomchance = 12;
+        GenerationModeSetup.normalCorridorRoomchance = 15;
         GenerationModeSetup.snakeCorridorRoomchance = 0;
         GenerationModeSetup.outcoveCorridorRoomchance = 0;
         // Corridor branch chances
-        GenerationModeSetup.normalCorridorBranchchance = 25;
+        GenerationModeSetup.normalCorridorBranchchance = 50;
         GenerationModeSetup.snakeCorridorBranchchance = 0;
         GenerationModeSetup.outcoveCorridorBranchchance = 0;
 }
