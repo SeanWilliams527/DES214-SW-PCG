@@ -72,6 +72,9 @@ public class PCG : MonoBehaviour
         public int normalCorridorBranchchance;
         public int snakeCorridorBranchchance;
         public int outcoveCorridorBranchchance;
+
+        // Color for debug mode
+        public Color debugColor;
     };
 
     // The current generation mode
@@ -91,10 +94,13 @@ public class PCG : MonoBehaviour
     //Size of floor and wall tiles in Unity units (somewhere between 1.0f and 10.0f works well)
     private float GridSize = 5.0f;
 
+    // Debug items
     [SerializeField]
     bool useSeed;
     [SerializeField]
     int seed;
+    [SerializeField]
+    bool showGenerationDebugColors;
 
     //////////////////////////////////////////////////////////////////////////
 
@@ -1159,17 +1165,31 @@ public class PCG : MonoBehaviour
     //Spawn a tile object if somthing isn't already there
     void SpawnTile(int x, int y)
     {
+        // Update the generation mode if it needs to be updated
+        UpdateGenerationMode(new Vector2Int(x, y));
+
         if (GetTile(x, y) != null)
             return;
         TileMap[(y * MaxMapSize) + x + TileMapMidPoint] = Spawn("floor", x, y);
+
+        // Change color if using debug colors
+        if (showGenerationDebugColors)
+            TileMap[(y * MaxMapSize) + x + TileMapMidPoint].GetComponent<SpriteRenderer>().color = CurrentGenerationMode.debugColor;
     }
 
     //Spawn a tile object if somthing isn't already there
     void SpawnTile(Vector2Int pos)
     {
+        // Update the generation mode if it needs to be updated
+        UpdateGenerationMode(pos);
+
         if (GetTile(pos.x, pos.y) != null)
             return;
         TileMap[(pos.y * MaxMapSize) + pos.x + TileMapMidPoint] = Spawn("floor", pos.x, pos.y);
+
+        // Change color if using debug colors
+        if (showGenerationDebugColors)
+            TileMap[(pos.y * MaxMapSize) + pos.x + TileMapMidPoint].GetComponent<SpriteRenderer>().color = CurrentGenerationMode.debugColor;
     }
 
     //Spawn a wall object if something isn't already there
@@ -1344,6 +1364,8 @@ public class PCG : MonoBehaviour
         GenerationModeSetup.normalCorridorBranchchance = 50;
         GenerationModeSetup.snakeCorridorBranchchance = 70;
         GenerationModeSetup.outcoveCorridorBranchchance = 70;
+        // Debug color
+        GenerationModeSetup.debugColor = Color.white;
 
         /////////////////////// DEVELOPMENT GENERATION MODE ///////////////////////
         GenerationModeDevelopment1.smallRoomChance = 75;
@@ -1372,6 +1394,8 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment1.normalCorridorBranchchance = 50;
         GenerationModeDevelopment1.snakeCorridorBranchchance = 70;
         GenerationModeDevelopment1.outcoveCorridorBranchchance = 70;
+        // Debug color
+        GenerationModeDevelopment1.debugColor = Color.red;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1451,5 +1475,21 @@ public class PCG : MonoBehaviour
     Vector2Int InvertVector(Vector2Int vec)
     {
         return new Vector2Int(vec.y, vec.x);
+    }
+
+    // Check if the generation mode needs to be updated based on the position
+    void UpdateGenerationMode(Vector2Int pos)
+    {
+        // Radius of the circles of generation
+        float genSetupRadius = 50;
+
+        // Calculate distance between pos and center
+        float distance = pos.magnitude;
+
+        // Update generation mode if needed
+        if (distance > genSetupRadius)
+            CurrentGenerationMode = GenerationModeSetup;
+        else
+            CurrentGenerationMode = GenerationModeDevelopment1;
     }
 }
