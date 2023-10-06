@@ -221,6 +221,7 @@ public class PCG : MonoBehaviour
         //Create the starting tile
         SpawnTile(0, 0);
         GenerateStartingRooms();
+        MakeBossRoom();
         Spawn("player", 0.0f, 0.0f);
 
         CurrentGenerationMode = GenerationModeDevelopment1;
@@ -1248,6 +1249,28 @@ public class PCG : MonoBehaviour
             Spawn("wall", mapRightEdge, y);
     }
 
+    // Make the boss room
+    void MakeBossRoom()
+    {
+        // Size of the boss room
+        int size = 21;
+
+        // Make room object
+        Room room = ConstructRoomObject(new Vector2Int(0, -(size/2 + 1)), N, size, size);
+        // Place room
+        for (int x = room.Left; x <= room.Right; x++)
+        {
+            for (int y = room.Down; y <= room.Up; y++)
+            {
+                SpawnTile(x, y);
+            }
+        }
+        // Add modifications to the room
+        RoomMakeRound(room);
+
+        // Spawn the boss
+    }
+
     //Spawn any object
     GameObject Spawn(string obj, float x, float y)
     {
@@ -1272,6 +1295,12 @@ public class PCG : MonoBehaviour
         var cam = Instantiate(PCGObject.Prefabs["camera"]);
         var wct = Instantiate(PCGObject.Prefabs["cameratarget"]);
         cam.GetComponent<CameraFollow>().ObjectToFollow = wct.transform;
+    }
+
+    // Spawn player in one of the 4 corners of the map
+    void SpawnPlayer()
+    {
+
     }
 
     //Try to pan to something of interest
@@ -1396,8 +1425,8 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment1.longCorridorChance = 0;
         // Corridor room spawning chances
         GenerationModeDevelopment1.normalCorridorRoomchance = 15;
-        GenerationModeDevelopment1.snakeCorridorRoomchance = 0;
-        GenerationModeDevelopment1.outcoveCorridorRoomchance = 0;
+        GenerationModeDevelopment1.snakeCorridorRoomchance = 15;
+        GenerationModeDevelopment1.outcoveCorridorRoomchance = 15;
         // Corridor branch chances
         GenerationModeDevelopment1.normalCorridorBranchchance = 50;
         GenerationModeDevelopment1.snakeCorridorBranchchance = 70;
@@ -1426,8 +1455,8 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment2.longCorridorChance = 10;
         // Corridor room spawning chances
         GenerationModeDevelopment2.normalCorridorRoomchance = 15;
-        GenerationModeDevelopment2.snakeCorridorRoomchance = 7;
-        GenerationModeDevelopment2.outcoveCorridorRoomchance = 7;
+        GenerationModeDevelopment2.snakeCorridorRoomchance = 15;
+        GenerationModeDevelopment2.outcoveCorridorRoomchance = 15;
         // Corridor branch chances
         GenerationModeDevelopment2.normalCorridorBranchchance = 50;
         GenerationModeDevelopment2.snakeCorridorBranchchance = 30;
@@ -1447,19 +1476,19 @@ public class PCG : MonoBehaviour
         // Room exit chances
         GenerationModeDevelopment3.roomExitChance = 100;
         // Corridor type chances
-        GenerationModeDevelopment3.normalCorridorChance = 75;
-        GenerationModeDevelopment3.snakeCorridorChance = 15;
-        GenerationModeDevelopment3.outcoveCorridorChance = 10;
+        GenerationModeDevelopment3.normalCorridorChance = 85;
+        GenerationModeDevelopment3.snakeCorridorChance = 7;
+        GenerationModeDevelopment3.outcoveCorridorChance = 8;
         // Corridor length chances
-        GenerationModeDevelopment3.shortCorridorChance = 60;
-        GenerationModeDevelopment3.medCorridorChance = 25;
-        GenerationModeDevelopment3.longCorridorChance = 15;
+        GenerationModeDevelopment3.shortCorridorChance = 80;
+        GenerationModeDevelopment3.medCorridorChance = 10;
+        GenerationModeDevelopment3.longCorridorChance = 10;
         // Corridor room spawning chances
         GenerationModeDevelopment3.normalCorridorRoomchance = 15;
-        GenerationModeDevelopment3.snakeCorridorRoomchance = 7;
-        GenerationModeDevelopment3.outcoveCorridorRoomchance = 7;
+        GenerationModeDevelopment3.snakeCorridorRoomchance = 15;
+        GenerationModeDevelopment3.outcoveCorridorRoomchance = 15;
         // Corridor branch chances
-        GenerationModeDevelopment3.normalCorridorBranchchance = 75;
+        GenerationModeDevelopment3.normalCorridorBranchchance = 35;
         GenerationModeDevelopment3.snakeCorridorBranchchance = 40;
         GenerationModeDevelopment3.outcoveCorridorBranchchance = 40;
         // Debug color
@@ -1509,6 +1538,16 @@ public class PCG : MonoBehaviour
     // Returns length of array if no outcome came true
     int RandomOutcome(int[] outcomeChances)
     {
+        // Check if chances add up to more than 100
+        int total = 0;
+        foreach (int i in outcomeChances)
+            total += i;
+        if (total > 100)
+        {
+            Debug.LogError("RandomOutcome detected chances that are greater than 100");
+            return 0;
+        }
+
         int random = RandInt(1, 100);
         int sum = 0;
         for (int i = 0; i < outcomeChances.Length; i++)
