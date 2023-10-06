@@ -34,8 +34,6 @@ public class PCG : MonoBehaviour
     // Generation mode
     struct Mode
     {
-        // Chance for room to spawn
-        public int roomChance;
         // Room size chances
         public int smallRoomChance;
         public int mediumRoomChance;
@@ -67,7 +65,12 @@ public class PCG : MonoBehaviour
     };
 
     // The current generation mode
-    Mode mode;
+    Mode CurrentGenerationMode;
+    Mode GenerationModeSetup;
+    Mode GenerationModeDevelopment1;
+    Mode GenerationModeDevelopment2;
+    Mode GenerationModeDevelopment3;
+
 
     //////////////////////////////////////////////////////////////////////////
     // DESIGNER ADJUSTABLE VALUES
@@ -203,6 +206,7 @@ public class PCG : MonoBehaviour
         {
             // Start corridoring in random direction
             bool result;
+
             if (PercentRoll(5))
                 result = MakeOutcoveCorridoor();
             else if (PercentRoll(8))
@@ -1257,8 +1261,35 @@ public class PCG : MonoBehaviour
 
     void InitializeGenerationModes()
     {
+        // Room size chances
+        GenerationModeSetup.smallRoomChance = 100;
+        GenerationModeSetup.mediumRoomChance = 0;
+        GenerationModeSetup.largeRoomChance = 0;
+        // Room variation chances
+        GenerationModeSetup.roomMiddlePillarChance = 20;
+        GenerationModeSetup.roomCrossPillarChance = 0;
+        GenerationModeSetup.roomCourtyardWallChance = 0;
+        GenerationModeSetup.roomRoundedChance = 100;
+        // Room exit chances
+        GenerationModeSetup.roomExitChance = 100;
 
-    }
+        // Corridor type chances
+        GenerationModeSetup.normalCorridorChance = 100;
+        GenerationModeSetup.snakeCorridorChance = 0;
+        GenerationModeSetup.outcoveCorridorChance = 0;
+        // Corridor length chances
+        GenerationModeSetup.shortCorridorChance = 80;
+        GenerationModeSetup.medCorridorChance = 20;
+        GenerationModeSetup.longCorridorChance = 0;
+        // Corridor room spawning chances
+        GenerationModeSetup.normalCorridorRoomchance = 12;
+        GenerationModeSetup.snakeCorridorRoomchance = 0;
+        GenerationModeSetup.outcoveCorridorRoomchance = 0;
+        // Corridor branch chances
+        GenerationModeSetup.normalCorridorBranchchance = 25;
+        GenerationModeSetup.snakeCorridorBranchchance = 0;
+        GenerationModeSetup.outcoveCorridorBranchchance = 0;
+}
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1296,6 +1327,24 @@ public class PCG : MonoBehaviour
     int RandInt(int min, int max)
     {
         return RNG.Next(min, max + 1);
+    }
+
+    // Given an array of chances for outcomes to happen
+    // Returns index of outcome that happened
+    // Returns length of array if no outcome came true
+    int RandomOutcome(int[] outcomeChances)
+    {
+        int random = RandInt(1, 100);
+        int sum = 0;
+        for (int i = 0; i < outcomeChances.Length; i++)
+        {
+            sum += outcomeChances[i];
+            if (random <= sum)
+                return i;
+        }
+
+        // No outcome came true
+        return outcomeChances.Length;
     }
 
     void ReSeedRNG()
