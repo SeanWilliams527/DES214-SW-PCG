@@ -195,7 +195,7 @@ public class PCG : MonoBehaviour
         SpawnTile(0, 0);
         GenerateStartingRooms();
         Spawn("player", 0.0f, 0.0f);
-        cursor.Set(0, 0);  // Set cursor to starting tile
+        cursor = Branches.Dequeue();
 
 
         // Main Generation code
