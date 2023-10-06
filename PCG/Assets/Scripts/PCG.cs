@@ -218,11 +218,9 @@ public class PCG : MonoBehaviour
         //(press T to see the test room).
         ///////////////////////////////////////////////////////
 
-        //Create the starting tile
-        SpawnTile(0, 0);
         GenerateStartingRooms();
         MakeBossRoom();
-        Spawn("player", 0.0f, 0.0f);
+        SpawnPlayer();
 
         CurrentGenerationMode = GenerationModeDevelopment1;
 
@@ -1300,7 +1298,18 @@ public class PCG : MonoBehaviour
     // Spawn player in one of the 4 corners of the map
     void SpawnPlayer()
     {
+        int roll = DieRoll(4);
 
+        int cornerSpawnDistance = (MaxMapSize / 2) - 1;
+
+        if (roll == 1)
+            Spawn("player", -cornerSpawnDistance, cornerSpawnDistance);
+        else if (roll == 2)
+            Spawn("player", cornerSpawnDistance, cornerSpawnDistance);
+        else if (roll == 3)
+            Spawn("player", -cornerSpawnDistance, -cornerSpawnDistance);
+        else
+            Spawn("player", cornerSpawnDistance, -cornerSpawnDistance);
     }
 
     //Try to pan to something of interest
