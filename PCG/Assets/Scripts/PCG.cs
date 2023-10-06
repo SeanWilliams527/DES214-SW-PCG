@@ -33,8 +33,8 @@ public class PCG : MonoBehaviour
 
     // Room Sizing
     int minSmallRoomSize = 4; int maxSmallRoomSize = 6;
-    int minMediumRoomSize = 8; int maxMediumRoomSize = 16;
-    int minLargeRoomSize = 18; int maxLargeRoomSize = 26;
+    int minMediumRoomSize = 8; int maxMediumRoomSize = 12;
+    int minLargeRoomSize = 14; int maxLargeRoomSize = 20;
 
     // Corridor Sizing
     int minShortCorridorSize = 1; int maxShortCorridorSize = 6;
@@ -209,7 +209,7 @@ public class PCG : MonoBehaviour
         GenerateStartingRooms();
         Spawn("player", 0.0f, 0.0f);
 
-        CurrentGenerationMode = GenerationModeSetup;
+        CurrentGenerationMode = GenerationModeDevelopment1;
 
         cursor = Branches.Dequeue();
 
@@ -1316,25 +1316,25 @@ public class PCG : MonoBehaviour
 
     void InitializeGenerationModes()
     {
+        /////////////////////// SETUP GENERATION MODE ///////////////////////
         // Room size chances
         GenerationModeSetup.smallRoomChance = 100;
         GenerationModeSetup.mediumRoomChance = 0;
         GenerationModeSetup.largeRoomChance = 0;
         // Room variation chances
-        GenerationModeSetup.roomMiddlePillarChance = 20;
+        GenerationModeSetup.roomMiddlePillarChance = 0;
         GenerationModeSetup.roomCrossPillarChance = 0;
         GenerationModeSetup.roomCourtyardWallChance = 0;
-        GenerationModeSetup.roomRoundedChance = 100;
+        GenerationModeSetup.roomRoundedChance = 0;
         // Room exit chances
         GenerationModeSetup.roomExitChance = 100;
-
         // Corridor type chances
         GenerationModeSetup.normalCorridorChance = 100;
         GenerationModeSetup.snakeCorridorChance = 0;
         GenerationModeSetup.outcoveCorridorChance = 0;
         // Corridor length chances
-        GenerationModeSetup.shortCorridorChance = 80;
-        GenerationModeSetup.medCorridorChance = 20;
+        GenerationModeSetup.shortCorridorChance = 90;
+        GenerationModeSetup.medCorridorChance = 10;
         GenerationModeSetup.longCorridorChance = 0;
         // Corridor room spawning chances
         GenerationModeSetup.normalCorridorRoomchance = 15;
@@ -1342,9 +1342,37 @@ public class PCG : MonoBehaviour
         GenerationModeSetup.outcoveCorridorRoomchance = 0;
         // Corridor branch chances
         GenerationModeSetup.normalCorridorBranchchance = 50;
-        GenerationModeSetup.snakeCorridorBranchchance = 0;
-        GenerationModeSetup.outcoveCorridorBranchchance = 0;
-}
+        GenerationModeSetup.snakeCorridorBranchchance = 70;
+        GenerationModeSetup.outcoveCorridorBranchchance = 70;
+
+        /////////////////////// DEVELOPMENT GENERATION MODE ///////////////////////
+        GenerationModeDevelopment1.smallRoomChance = 75;
+        GenerationModeDevelopment1.mediumRoomChance = 25;
+        GenerationModeDevelopment1.largeRoomChance = 0;
+        // Room variation chances
+        GenerationModeDevelopment1.roomMiddlePillarChance = 30;
+        GenerationModeDevelopment1.roomCrossPillarChance = 15;
+        GenerationModeDevelopment1.roomCourtyardWallChance = 0;
+        GenerationModeDevelopment1.roomRoundedChance = 100;
+        // Room exit chances
+        GenerationModeDevelopment1.roomExitChance = 100;
+        // Corridor type chances
+        GenerationModeDevelopment1.normalCorridorChance = 95;
+        GenerationModeDevelopment1.snakeCorridorChance = 5;
+        GenerationModeDevelopment1.outcoveCorridorChance = 0;
+        // Corridor length chances
+        GenerationModeDevelopment1.shortCorridorChance = 80;
+        GenerationModeDevelopment1.medCorridorChance = 20;
+        GenerationModeDevelopment1.longCorridorChance = 0;
+        // Corridor room spawning chances
+        GenerationModeDevelopment1.normalCorridorRoomchance = 15;
+        GenerationModeDevelopment1.snakeCorridorRoomchance = 0;
+        GenerationModeDevelopment1.outcoveCorridorRoomchance = 0;
+        // Corridor branch chances
+        GenerationModeDevelopment1.normalCorridorBranchchance = 50;
+        GenerationModeDevelopment1.snakeCorridorBranchchance = 70;
+        GenerationModeDevelopment1.outcoveCorridorBranchchance = 70;
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
