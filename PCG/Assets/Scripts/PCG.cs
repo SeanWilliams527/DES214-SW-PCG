@@ -224,8 +224,8 @@ public class PCG : MonoBehaviour
             switch (corridor)
             {
                 case 0: result = MakeCorridor(); break;
-                case 1: result = MakeCorridor(); break;
-                case 2: result = MakeCorridor(); break;
+                case 1: result = MakeSnakeCorridor(); break;
+                case 2: result = MakeOutcoveCorridor(); break;
                 default: Debug.LogError("Invalid Corridor Chances. Make sure chances to spawn each corridor add up to 100"); break;
             }
 
@@ -265,8 +265,17 @@ public class PCG : MonoBehaviour
             return false;  // No directions to go
         Vector2Int direction = possibleDirections[DieRoll(possibleDirections.Count) - 1];
 
+        // Determine length of corridor
+        int length = 1;
+        int[] corridorLengths = { CurrentGenerationMode.shortCorridorChance, CurrentGenerationMode.medCorridorChance, CurrentGenerationMode.longCorridorChance };
+        switch (RandomOutcome(corridorLengths))
+        {
+            case 0: length = RandInt(minShortCorridorSize, maxShortCorridorSize); break;
+            case 1: length = RandInt(minMediumCorridorSize, maxMediumCorridorSize); break;
+            case 2: length = RandInt(minLongCorridorSize, maxLongCorridorSize); break;
+        }
+
         // Make corridor
-        int length = DieRoll(10);
         for (int i = 0; i < length; i++)
         {
             // Check if can continue corridor
@@ -296,8 +305,6 @@ public class PCG : MonoBehaviour
     bool MakeSnakeCorridor()
     {
         // ---------------- Snake Variables ---------------------
-        int snakeMinLength = 3;
-        int snakeMaxLength = 30;
         // Snake goes back and forth
         // How many tiles should we go before snaking to other side
         int snakeMinStride = 3;
@@ -316,7 +323,14 @@ public class PCG : MonoBehaviour
         Vector2Int side2 = side1 * -1;
 
         // Determine snake length and stride
-        int length = RandInt(snakeMinLength, snakeMaxLength);
+        int length = 1;
+        int[] corridorLengths = { CurrentGenerationMode.shortCorridorChance, CurrentGenerationMode.medCorridorChance, CurrentGenerationMode.longCorridorChance };
+        switch (RandomOutcome(corridorLengths))
+        {
+            case 0: length = RandInt(minShortCorridorSize, maxShortCorridorSize); break;
+            case 1: length = RandInt(minMediumCorridorSize, maxMediumCorridorSize); break;
+            case 2: length = RandInt(minLongCorridorSize, maxLongCorridorSize); break;
+        }
         int stride = RandInt(snakeMinStride, snakeMaxStride);
 
         // Construct snake
@@ -388,14 +402,12 @@ public class PCG : MonoBehaviour
     }
 
     // Make an outcove corridoor
-    bool MakeOutcoveCorridoor()
+    bool MakeOutcoveCorridor()
     {
         // ---------------- Outcove Variables ---------------------
-        int minLength = 6;
-        int maxLength = 20;
 
-        int roomChance = 5;
-        int branchChance = 5;
+        int roomChance = CurrentGenerationMode.outcoveCorridorRoomchance;
+        int branchChance = CurrentGenerationMode.outcoveCorridorBranchchance;
         // --------------------------------------------------------
 
         List<Vector2Int> possibleDirections = CorridorGetPossibleDirections();
@@ -405,7 +417,15 @@ public class PCG : MonoBehaviour
         // Corridor will have outcoves that go side to side
         Vector2Int side1 = InvertVector(dir);
         Vector2Int side2 = side1 * -1;
-        int length = RandInt(minLength, maxLength);
+        // Determine length of corridor
+        int length = 1;
+        int[] corridorLengths = { CurrentGenerationMode.shortCorridorChance, CurrentGenerationMode.medCorridorChance, CurrentGenerationMode.longCorridorChance };
+        switch (RandomOutcome(corridorLengths))
+        {
+            case 0: length = RandInt(minShortCorridorSize, maxShortCorridorSize); break;
+            case 1: length = RandInt(minMediumCorridorSize, maxMediumCorridorSize); break;
+            case 2: length = RandInt(minLongCorridorSize, maxLongCorridorSize); break;
+        }
 
         bool makeOutcove = false;  // Should we make an outcove on this step?
         // Make a corridor with alternating skinny and outcove sections
@@ -538,20 +558,22 @@ public class PCG : MonoBehaviour
 
         // Roll to modify room
 
-        if (PercentRoll(40))
+        if (PercentRoll(CurrentGenerationMode.roomMiddlePillarChance))
             RoomAddMiddlePillar(room);
 
-        int roll = DieRoll(6);
-        if (roll == 1)
-            RoomAddCrossPillars(room);
-        else if (roll == 2 || roll == 3 || roll == 4)
-            RoomAddCourtYardWalls(room);
+        int[] outcomes = { CurrentGenerationMode.roomCrossPillarChance, CurrentGenerationMode.roomCourtyardWallChance };
+        switch (RandomOutcome(outcomes))
+        {
+            case 0: RoomAddCrossPillars(room); break;
+            case 1: RoomAddCourtYardWalls(room); break;
+            default: break;
+        }
 
-        if (PercentRoll(35))
+        if (PercentRoll(CurrentGenerationMode.roomRoundedChance))
             RoomMakeRound(room);
 
         // Roll for exit on each wall
-        int exitChance = 60;
+        int exitChance = CurrentGenerationMode.roomExitChance;
         if (PercentRoll(exitChance))  // Roll for exit left
         {
             RoomAddExit(room, N);
