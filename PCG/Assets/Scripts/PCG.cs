@@ -752,15 +752,23 @@ public class PCG : MonoBehaviour
         // Generate NW room
         cursor.x = -halfMapSize; cursor.y = halfMapSize - (roomHeight - 1);
         FillAreaWithTile(roomWidth, roomHeight);
+        Branches.Enqueue(new Vector2Int(-halfMapSize + 1, halfMapSize - 2));
+        Branches.Enqueue(new Vector2Int(-halfMapSize + 2, halfMapSize - 1));
         // Generate NE room
         cursor.x = halfMapSize - (roomWidth - 1); cursor.y = halfMapSize - (roomHeight - 1);
         FillAreaWithTile(roomWidth, roomHeight);
-        // Generate SW room
-        cursor.x = -halfMapSize; cursor.y = -halfMapSize;
-        FillAreaWithTile(roomWidth, roomHeight);
+        Branches.Enqueue(new Vector2Int(halfMapSize - 2, halfMapSize - 1));
+        Branches.Enqueue(new Vector2Int(halfMapSize - 1, halfMapSize - 2));
         // Generate SE room
         cursor.x = halfMapSize - (roomWidth - 1); cursor.y = -halfMapSize;
         FillAreaWithTile(roomWidth, roomHeight);
+        Branches.Enqueue(new Vector2Int(halfMapSize - 1, -halfMapSize + 2));
+        Branches.Enqueue(new Vector2Int(halfMapSize - 2, -halfMapSize + 1));
+        // Generate SW room
+        cursor.x = -halfMapSize; cursor.y = -halfMapSize;
+        FillAreaWithTile(roomWidth, roomHeight);
+        Branches.Enqueue(new Vector2Int(-halfMapSize + 2, -halfMapSize + 1));
+        Branches.Enqueue(new Vector2Int(-halfMapSize + 1, -halfMapSize + 2));
     }
 
     //Clear the entire level except for the PCG object
