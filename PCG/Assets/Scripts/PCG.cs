@@ -1631,6 +1631,18 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment1.normalCorridorBranchchance = 50;
         GenerationModeDevelopment1.snakeCorridorBranchchance = 70;
         GenerationModeDevelopment1.outcoveCorridorBranchchance = 70;
+        // The threat level of the each room
+        GenerationModeDevelopment1.minThreatSmallRooms = 2;
+        GenerationModeDevelopment1.maxThreatSmallRooms = 10;
+        GenerationModeDevelopment1.minThreatMediumRooms = 5;
+        GenerationModeDevelopment1.maxThreatMediumRooms = 14;
+        GenerationModeDevelopment1.minThreatLargeRooms = 0;
+        GenerationModeDevelopment1.maxThreatLargeRooms = 0;
+        // Enemy Spawning chances
+        GenerationModeDevelopment1.trivialEnemySpawnChance = 20;
+        GenerationModeDevelopment1.easyEnemySpawnChance = 80;
+        GenerationModeDevelopment1.mediumEnemySpawnChance = 0;
+        GenerationModeDevelopment1.hardEnemySpawnChance = 0;
         // Debug color
         GenerationModeDevelopment1.debugColor = new Color(0.8795988f, 1.0f, 0.7987421f);
 
@@ -1661,6 +1673,18 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment2.normalCorridorBranchchance = 50;
         GenerationModeDevelopment2.snakeCorridorBranchchance = 30;
         GenerationModeDevelopment2.outcoveCorridorBranchchance = 30;
+        // The threat level of the each room
+        GenerationModeDevelopment2.minThreatSmallRooms = 4;
+        GenerationModeDevelopment2.maxThreatSmallRooms = 5;
+        GenerationModeDevelopment2.minThreatMediumRooms = 8;
+        GenerationModeDevelopment2.maxThreatMediumRooms = 18;
+        GenerationModeDevelopment2.minThreatLargeRooms = 10;
+        GenerationModeDevelopment2.maxThreatLargeRooms = 30;
+        // Enemy Spawning chances
+        GenerationModeDevelopment2.trivialEnemySpawnChance = 5;
+        GenerationModeDevelopment2.easyEnemySpawnChance = 15;
+        GenerationModeDevelopment2.mediumEnemySpawnChance = 75;
+        GenerationModeDevelopment2.hardEnemySpawnChance = 5;
         // Debug color
         GenerationModeDevelopment2.debugColor = new Color(0.8553458f, 1.0f, 0.993212f);
 
@@ -1691,6 +1715,18 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment3.normalCorridorBranchchance = 35;
         GenerationModeDevelopment3.snakeCorridorBranchchance = 40;
         GenerationModeDevelopment3.outcoveCorridorBranchchance = 40;
+        // The threat level of the each room
+        GenerationModeDevelopment2.minThreatSmallRooms = 8;
+        GenerationModeDevelopment2.maxThreatSmallRooms = 14;
+        GenerationModeDevelopment2.minThreatMediumRooms = 12;
+        GenerationModeDevelopment2.maxThreatMediumRooms = 20;
+        GenerationModeDevelopment2.minThreatLargeRooms = 20;
+        GenerationModeDevelopment2.maxThreatLargeRooms = 30;
+        // Enemy Spawning chances
+        GenerationModeDevelopment2.trivialEnemySpawnChance = 5;
+        GenerationModeDevelopment2.easyEnemySpawnChance = 5;
+        GenerationModeDevelopment2.mediumEnemySpawnChance = 15;
+        GenerationModeDevelopment2.hardEnemySpawnChance = 75;
         // Debug color
         GenerationModeDevelopment3.debugColor = new Color(0.8244471f, 0.81761f, 1.0f);
     }
