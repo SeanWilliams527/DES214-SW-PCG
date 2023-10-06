@@ -200,6 +200,19 @@ public class PCG : MonoBehaviour
         Spawn("player", 0.0f, 0.0f);
         cursor = Branches.Dequeue();
 
+        int[] outcomes = { 0, 60, 10 };
+        int[] score = new int[outcomes.Length + 1];
+        for (int i = 0; i < 1000; i++)
+        {
+            int outcome = RandomOutcome(outcomes);
+            score[outcome]++;
+        }
+
+        for (int i = 0; i < score.Length; i++)
+        {
+            Debug.Log("Outcome " + i + ": " + score[i]);
+        }
+
 
         // Main Generation code
         while (true)
