@@ -87,6 +87,10 @@ public class PCG : MonoBehaviour
     // Radius of the circles of generation
     [SerializeField]
     float genSetupRadius;
+    [SerializeField]
+    float genDev1Radius;
+    [SerializeField]
+    float genDev2Radius;
 
 
     //////////////////////////////////////////////////////////////////////////
@@ -1371,12 +1375,12 @@ public class PCG : MonoBehaviour
         // Debug color
         GenerationModeSetup.debugColor = Color.white;
 
-        /////////////////////// DEVELOPMENT GENERATION MODE ///////////////////////
+        /////////////////////// DEVELOPMENT1 GENERATION MODE ///////////////////////
         GenerationModeDevelopment1.smallRoomChance = 75;
         GenerationModeDevelopment1.mediumRoomChance = 25;
         GenerationModeDevelopment1.largeRoomChance = 0;
         // Room variation chances
-        GenerationModeDevelopment1.roomMiddlePillarChance = 30;
+        GenerationModeDevelopment1.roomMiddlePillarChance = 50;
         GenerationModeDevelopment1.roomCrossPillarChance = 15;
         GenerationModeDevelopment1.roomCourtyardWallChance = 0;
         GenerationModeDevelopment1.roomRoundedChance = 100;
@@ -1399,7 +1403,67 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment1.snakeCorridorBranchchance = 70;
         GenerationModeDevelopment1.outcoveCorridorBranchchance = 70;
         // Debug color
-        GenerationModeDevelopment1.debugColor = Color.red;
+        GenerationModeDevelopment1.debugColor = new Color(0.8795988f, 1.0f, 0.7987421f);
+
+        /////////////////////// DEVELOPMENT2 GENERATION MODE ///////////////////////
+        GenerationModeDevelopment2.smallRoomChance = 35;
+        GenerationModeDevelopment2.mediumRoomChance = 50;
+        GenerationModeDevelopment2.largeRoomChance = 15;
+        // Room variation chances
+        GenerationModeDevelopment2.roomMiddlePillarChance = 35;
+        GenerationModeDevelopment2.roomCrossPillarChance = 40;
+        GenerationModeDevelopment2.roomCourtyardWallChance = 40;
+        GenerationModeDevelopment2.roomRoundedChance = 50;
+        // Room exit chances
+        GenerationModeDevelopment2.roomExitChance = 100;
+        // Corridor type chances
+        GenerationModeDevelopment2.normalCorridorChance = 80;
+        GenerationModeDevelopment2.snakeCorridorChance = 10;
+        GenerationModeDevelopment2.outcoveCorridorChance = 10;
+        // Corridor length chances
+        GenerationModeDevelopment2.shortCorridorChance = 65;
+        GenerationModeDevelopment2.medCorridorChance = 25;
+        GenerationModeDevelopment2.longCorridorChance = 10;
+        // Corridor room spawning chances
+        GenerationModeDevelopment2.normalCorridorRoomchance = 15;
+        GenerationModeDevelopment2.snakeCorridorRoomchance = 7;
+        GenerationModeDevelopment2.outcoveCorridorRoomchance = 7;
+        // Corridor branch chances
+        GenerationModeDevelopment2.normalCorridorBranchchance = 50;
+        GenerationModeDevelopment2.snakeCorridorBranchchance = 30;
+        GenerationModeDevelopment2.outcoveCorridorBranchchance = 30;
+        // Debug color
+        GenerationModeDevelopment2.debugColor = new Color(0.8553458f, 1.0f, 0.993212f);
+
+        /////////////////////// DEVELOPMENT3 GENERATION MODE ///////////////////////
+        GenerationModeDevelopment3.smallRoomChance = 35;
+        GenerationModeDevelopment3.mediumRoomChance = 35;
+        GenerationModeDevelopment3.largeRoomChance = 30;
+        // Room variation chances
+        GenerationModeDevelopment3.roomMiddlePillarChance = 50;
+        GenerationModeDevelopment3.roomCrossPillarChance = 25;
+        GenerationModeDevelopment3.roomCourtyardWallChance = 50;
+        GenerationModeDevelopment3.roomRoundedChance = 10;
+        // Room exit chances
+        GenerationModeDevelopment3.roomExitChance = 100;
+        // Corridor type chances
+        GenerationModeDevelopment3.normalCorridorChance = 75;
+        GenerationModeDevelopment3.snakeCorridorChance = 15;
+        GenerationModeDevelopment3.outcoveCorridorChance = 10;
+        // Corridor length chances
+        GenerationModeDevelopment3.shortCorridorChance = 60;
+        GenerationModeDevelopment3.medCorridorChance = 25;
+        GenerationModeDevelopment3.longCorridorChance = 15;
+        // Corridor room spawning chances
+        GenerationModeDevelopment3.normalCorridorRoomchance = 15;
+        GenerationModeDevelopment3.snakeCorridorRoomchance = 7;
+        GenerationModeDevelopment3.outcoveCorridorRoomchance = 7;
+        // Corridor branch chances
+        GenerationModeDevelopment3.normalCorridorBranchchance = 75;
+        GenerationModeDevelopment3.snakeCorridorBranchchance = 40;
+        GenerationModeDevelopment3.outcoveCorridorBranchchance = 40;
+        // Debug color
+        GenerationModeDevelopment3.debugColor = new Color(0.8244471f, 0.81761f, 1.0f);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1488,9 +1552,13 @@ public class PCG : MonoBehaviour
         float distance = pos.magnitude;
 
         // Update generation mode if needed
-        if (distance > genSetupRadius)
-            CurrentGenerationMode = GenerationModeSetup;
-        else
+        if (distance < genDev2Radius)
+            CurrentGenerationMode = GenerationModeDevelopment3;
+        else if (distance < genDev1Radius)
+            CurrentGenerationMode = GenerationModeDevelopment2;
+        else if (distance < genSetupRadius)
             CurrentGenerationMode = GenerationModeDevelopment1;
+        else
+            CurrentGenerationMode = GenerationModeSetup;
     }
 }
