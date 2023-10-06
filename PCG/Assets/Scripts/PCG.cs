@@ -1294,7 +1294,7 @@ public class PCG : MonoBehaviour
         // Check if a floor tile is there
         GameObject tile = GetTile(x, y);
 
-        while (tile != null)
+        while (tile == null)
         {
             // Generate coordinates
             x = RandInt(room.Left, room.Right);
