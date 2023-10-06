@@ -140,6 +140,16 @@ PrefabInstance:
       propertyPath: useSeed
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1238335772146763477, guid: bb13fe8a1ca1c1740a3ce43b8cfcdbae,
+        type: 3}
+      propertyPath: genSetupRadius
+      value: 110
+      objectReference: {fileID: 0}
+    - target: {fileID: 1238335772146763477, guid: bb13fe8a1ca1c1740a3ce43b8cfcdbae,
+        type: 3}
+      propertyPath: showGenerationDebugColors
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7179176755972908415, guid: bb13fe8a1ca1c1740a3ce43b8cfcdbae,
         type: 3}
       propertyPath: m_Name

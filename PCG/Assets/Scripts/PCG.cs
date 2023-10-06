@@ -84,6 +84,10 @@ public class PCG : MonoBehaviour
     Mode GenerationModeDevelopment2;
     Mode GenerationModeDevelopment3;
 
+    // Radius of the circles of generation
+    [SerializeField]
+    float genSetupRadius;
+
 
     //////////////////////////////////////////////////////////////////////////
     // DESIGNER ADJUSTABLE VALUES
@@ -1480,9 +1484,6 @@ public class PCG : MonoBehaviour
     // Check if the generation mode needs to be updated based on the position
     void UpdateGenerationMode(Vector2Int pos)
     {
-        // Radius of the circles of generation
-        float genSetupRadius = 50;
-
         // Calculate distance between pos and center
         float distance = pos.magnitude;
 
