@@ -35,8 +35,8 @@ public class PCG : MonoBehaviour
 
     // Room Sizing
     int minSmallRoomSize = 2; int maxSmallRoomSize = 4;
-    int minMediumRoomSize = 6; int maxMediumRoomSize = 10;
-    int minLargeRoomSize = 12; int maxLargeRoomSize = 18;
+    int minMediumRoomSize = 6; int maxMediumRoomSize = 8;
+    int minLargeRoomSize = 10; int maxLargeRoomSize = 14;
 
     // Corridor Sizing
     int minShortCorridorSize = 1; int maxShortCorridorSize = 6;
@@ -1628,9 +1628,9 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment1.snakeCorridorRoomchance = 15;
         GenerationModeDevelopment1.outcoveCorridorRoomchance = 15;
         // Corridor branch chances
-        GenerationModeDevelopment1.normalCorridorBranchchance = 50;
-        GenerationModeDevelopment1.snakeCorridorBranchchance = 70;
-        GenerationModeDevelopment1.outcoveCorridorBranchchance = 70;
+        GenerationModeDevelopment1.normalCorridorBranchchance = 15;
+        GenerationModeDevelopment1.snakeCorridorBranchchance = 15;
+        GenerationModeDevelopment1.outcoveCorridorBranchchance = 15;
         // The threat level of the each room
         GenerationModeDevelopment1.minThreatSmallRooms = 2;
         GenerationModeDevelopment1.maxThreatSmallRooms = 10;
