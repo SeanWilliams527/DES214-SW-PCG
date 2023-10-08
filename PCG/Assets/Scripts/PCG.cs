@@ -36,7 +36,7 @@ public class PCG : MonoBehaviour
     // Room Sizing
     int minSmallRoomSize = 2; int maxSmallRoomSize = 4;
     int minMediumRoomSize = 6; int maxMediumRoomSize = 8;
-    int minLargeRoomSize = 10; int maxLargeRoomSize = 14;
+    int minLargeRoomSize = 10; int maxLargeRoomSize = 12;
 
     // Corridor Sizing
     int minShortCorridorSize = 1; int maxShortCorridorSize = 6;
@@ -119,7 +119,7 @@ public class PCG : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////
 
     //Maximum height and width of tile map (must be odd, somewhere between 21 and 101 works well)
-    private int MaxMapSize = 201;
+    private int MaxMapSize = 101;
     //Size of floor and wall tiles in Unity units (somewhere between 1.0f and 10.0f works well)
     private float GridSize = 5.0f;
 
