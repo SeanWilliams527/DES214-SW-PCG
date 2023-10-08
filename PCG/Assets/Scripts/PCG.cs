@@ -34,9 +34,9 @@ public class PCG : MonoBehaviour
     enum RoomType { small, medium, large };
 
     // Room Sizing
-    int minSmallRoomSize = 4; int maxSmallRoomSize = 6;
-    int minMediumRoomSize = 8; int maxMediumRoomSize = 12;
-    int minLargeRoomSize = 14; int maxLargeRoomSize = 20;
+    int minSmallRoomSize = 2; int maxSmallRoomSize = 4;
+    int minMediumRoomSize = 6; int maxMediumRoomSize = 10;
+    int minLargeRoomSize = 12; int maxLargeRoomSize = 18;
 
     // Corridor Sizing
     int minShortCorridorSize = 1; int maxShortCorridorSize = 6;
@@ -1572,7 +1572,7 @@ public class PCG : MonoBehaviour
         GenerationModeSetup.roomCourtyardWallChance = 0;
         GenerationModeSetup.roomRoundedChance = 0;
         // Room exit chances
-        GenerationModeSetup.roomExitChance = 100;
+        GenerationModeSetup.roomExitChance = 50;
         // Corridor type chances
         GenerationModeSetup.normalCorridorChance = 100;
         GenerationModeSetup.snakeCorridorChance = 0;
@@ -1582,13 +1582,13 @@ public class PCG : MonoBehaviour
         GenerationModeSetup.medCorridorChance = 10;
         GenerationModeSetup.longCorridorChance = 0;
         // Corridor room spawning chances
-        GenerationModeSetup.normalCorridorRoomchance = 15;
+        GenerationModeSetup.normalCorridorRoomchance = 25;
         GenerationModeSetup.snakeCorridorRoomchance = 0;
         GenerationModeSetup.outcoveCorridorRoomchance = 0;
         // Corridor branch chances
-        GenerationModeSetup.normalCorridorBranchchance = 50;
-        GenerationModeSetup.snakeCorridorBranchchance = 70;
-        GenerationModeSetup.outcoveCorridorBranchchance = 70;
+        GenerationModeSetup.normalCorridorBranchchance = 15;
+        GenerationModeSetup.snakeCorridorBranchchance = 15;
+        GenerationModeSetup.outcoveCorridorBranchchance = 15;
         // The threat level of the each room
         GenerationModeSetup.minThreatSmallRooms = 1;
         GenerationModeSetup.maxThreatSmallRooms = 3;
@@ -1604,7 +1604,7 @@ public class PCG : MonoBehaviour
         // Debug color
         GenerationModeSetup.debugColor = Color.white;
 
-        /////////////////////// DEVELOPMENT1 GENERATION MODE ///////////////////////
+        /////////////////////// DEVELOPMENT 1 GENERATION MODE ///////////////////////
         GenerationModeDevelopment1.smallRoomChance = 75;
         GenerationModeDevelopment1.mediumRoomChance = 25;
         GenerationModeDevelopment1.largeRoomChance = 0;
@@ -1646,7 +1646,7 @@ public class PCG : MonoBehaviour
         // Debug color
         GenerationModeDevelopment1.debugColor = new Color(0.8795988f, 1.0f, 0.7987421f);
 
-        /////////////////////// DEVELOPMENT2 GENERATION MODE ///////////////////////
+        /////////////////////// DEVELOPMENT 2 GENERATION MODE ///////////////////////
         GenerationModeDevelopment2.smallRoomChance = 35;
         GenerationModeDevelopment2.mediumRoomChance = 50;
         GenerationModeDevelopment2.largeRoomChance = 15;
@@ -1688,7 +1688,7 @@ public class PCG : MonoBehaviour
         // Debug color
         GenerationModeDevelopment2.debugColor = new Color(0.8553458f, 1.0f, 0.993212f);
 
-        /////////////////////// DEVELOPMENT3 GENERATION MODE ///////////////////////
+        /////////////////////// DEVELOPMENT 3 GENERATION MODE ///////////////////////
         GenerationModeDevelopment3.smallRoomChance = 35;
         GenerationModeDevelopment3.mediumRoomChance = 35;
         GenerationModeDevelopment3.largeRoomChance = 30;
@@ -1712,21 +1712,21 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment3.snakeCorridorRoomchance = 15;
         GenerationModeDevelopment3.outcoveCorridorRoomchance = 15;
         // Corridor branch chances
-        GenerationModeDevelopment3.normalCorridorBranchchance = 35;
-        GenerationModeDevelopment3.snakeCorridorBranchchance = 40;
-        GenerationModeDevelopment3.outcoveCorridorBranchchance = 40;
+        GenerationModeDevelopment3.normalCorridorBranchchance = 15;
+        GenerationModeDevelopment3.snakeCorridorBranchchance = 15;
+        GenerationModeDevelopment3.outcoveCorridorBranchchance = 15;
         // The threat level of the each room
-        GenerationModeDevelopment2.minThreatSmallRooms = 8;
-        GenerationModeDevelopment2.maxThreatSmallRooms = 14;
-        GenerationModeDevelopment2.minThreatMediumRooms = 12;
-        GenerationModeDevelopment2.maxThreatMediumRooms = 20;
-        GenerationModeDevelopment2.minThreatLargeRooms = 20;
-        GenerationModeDevelopment2.maxThreatLargeRooms = 30;
+        GenerationModeDevelopment3.minThreatSmallRooms = 14;
+        GenerationModeDevelopment3.maxThreatSmallRooms = 20;
+        GenerationModeDevelopment3.minThreatMediumRooms = 18;
+        GenerationModeDevelopment3.maxThreatMediumRooms = 25;
+        GenerationModeDevelopment3.minThreatLargeRooms = 20;
+        GenerationModeDevelopment3.maxThreatLargeRooms = 30;
         // Enemy Spawning chances
-        GenerationModeDevelopment2.trivialEnemySpawnChance = 5;
-        GenerationModeDevelopment2.easyEnemySpawnChance = 5;
-        GenerationModeDevelopment2.mediumEnemySpawnChance = 15;
-        GenerationModeDevelopment2.hardEnemySpawnChance = 75;
+        GenerationModeDevelopment3.trivialEnemySpawnChance = 5;
+        GenerationModeDevelopment3.easyEnemySpawnChance = 5;
+        GenerationModeDevelopment3.mediumEnemySpawnChance = 15;
+        GenerationModeDevelopment3.hardEnemySpawnChance = 75;
         // Debug color
         GenerationModeDevelopment3.debugColor = new Color(0.8244471f, 0.81761f, 1.0f);
     }
