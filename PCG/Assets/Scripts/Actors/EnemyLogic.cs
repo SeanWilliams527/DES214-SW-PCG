@@ -32,6 +32,8 @@ public class EnemyLogic : MonoBehaviour
     public float WanderChance = 0.3f; //30% chance
     //Chance of dropping a heart on death
     public float DropChance = 0.35f; //35% chance
+    //Chance of dropping a random boost on death
+    public float BoostDropChance = 0.1f;
 
     //////////////////////////////////////////////////////////////////////////
 
@@ -280,13 +282,28 @@ public class EnemyLogic : MonoBehaviour
             GetComponent<EnemyLogic>().SetAggroState(true); //Aggro when hit
             if (Health <= 0) //We're dead, so destroy ourself
             {
-                if (UnityEngine.Random.Range(0.0f, 1.0f) <= DropChance)
+                float roll = UnityEngine.Random.Range(0.0f, 1.0f);
+                if (roll <= DropChance)
                     Instantiate(PCGObject.Prefabs["heart"], transform.position, Quaternion.identity);
+                else if (roll <= DropChance + BoostDropChance)
+                    DropRandomBoost();
                 Destroy(gameObject);
             }
         }
         //Aggro but no damage on friendly fire
         if (bullet != null && bullet.Team != Teams.Player)
             GetComponent<EnemyLogic>().SetAggroState(true);
+    }
+
+    // Drop a random boost
+    void DropRandomBoost()
+    {
+        float roll = UnityEngine.Random.Range(0.0f, 0.99f);
+        if (roll <= 0.33f)
+            Instantiate(PCGObject.Prefabs["healthboost"], transform.position, Quaternion.identity);
+        else if (roll <= 0.66f)
+            Instantiate(PCGObject.Prefabs["shotboost"], transform.position, Quaternion.identity);
+        else
+            Instantiate(PCGObject.Prefabs["speedboost"], transform.position, Quaternion.identity);
     }
 }
