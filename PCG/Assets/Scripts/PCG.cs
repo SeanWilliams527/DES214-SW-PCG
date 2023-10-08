@@ -859,21 +859,25 @@ public class PCG : MonoBehaviour
         FillAreaWithTile(roomWidth, roomHeight);
         Branches.Enqueue(new Vector2Int(-halfMapSize + 1, halfMapSize - 2));
         Branches.Enqueue(new Vector2Int(-halfMapSize + 2, halfMapSize - 1));
+        SpawnRandomPickup(new Vector2Int(-halfMapSize + 2, halfMapSize - 2));
         // Generate NE room
         cursor.x = halfMapSize - (roomWidth - 1); cursor.y = halfMapSize - (roomHeight - 1);
         FillAreaWithTile(roomWidth, roomHeight);
         Branches.Enqueue(new Vector2Int(halfMapSize - 2, halfMapSize - 1));
         Branches.Enqueue(new Vector2Int(halfMapSize - 1, halfMapSize - 2));
+        SpawnRandomPickup(new Vector2Int(halfMapSize - 2, halfMapSize - 2));
         // Generate SE room
         cursor.x = halfMapSize - (roomWidth - 1); cursor.y = -halfMapSize;
         FillAreaWithTile(roomWidth, roomHeight);
         Branches.Enqueue(new Vector2Int(halfMapSize - 1, -halfMapSize + 2));
         Branches.Enqueue(new Vector2Int(halfMapSize - 2, -halfMapSize + 1));
+        SpawnRandomPickup(new Vector2Int(halfMapSize - 2, -halfMapSize + 2));
         // Generate SW room
         cursor.x = -halfMapSize; cursor.y = -halfMapSize;
         FillAreaWithTile(roomWidth, roomHeight);
         Branches.Enqueue(new Vector2Int(-halfMapSize + 2, -halfMapSize + 1));
         Branches.Enqueue(new Vector2Int(-halfMapSize + 1, -halfMapSize + 2));
+        SpawnRandomPickup(new Vector2Int(-halfMapSize + 2, -halfMapSize + 2));
     }
 
     //Clear the entire level except for the PCG object
@@ -1489,6 +1493,18 @@ public class PCG : MonoBehaviour
             Spawn("player", -cornerSpawnDistance, -cornerSpawnDistance);
         else
             Spawn("player", cornerSpawnDistance, -cornerSpawnDistance);
+    }
+
+    // Spawn a random upgrade pickup
+    void SpawnRandomPickup(Vector2Int tilePos)
+    {
+        int roll = DieRoll(3);
+        if (roll == 1)
+            Spawn("healthboost", tilePos.x, tilePos.y);
+        else if (roll == 2)
+            Spawn("shotboost", tilePos.x, tilePos.y);
+        else
+            Spawn("speedboost", tilePos.x, tilePos.y);
     }
 
     //Try to pan to something of interest
