@@ -916,6 +916,17 @@ public class PCG : MonoBehaviour
         }
     }
 
+    // Clear the level of any enemies
+    public void ClearEnemies()
+    {
+        // Delete all enemies
+        var objsToDelete = GameObject.FindGameObjectsWithTag("Enemy");
+        for (int i = 0; i < objsToDelete.Length; i++)
+        {
+            UnityEngine.Object.Destroy(objsToDelete[i]);
+        }
+    }
+
     //Reset the level after a delay
     //This is public so it can be called from other files using the static PCGObject from above
     public void ResetLevel(float delay)
@@ -1224,6 +1235,12 @@ public class PCG : MonoBehaviour
             Spawn("tank", pos.x, pos.y);
         else
             Spawn("spread", pos.x, pos.y);
+    }
+
+    // Spawns a trivial enemy on a tile
+    void SpawnTrivialEnemy(Vector2Int pos)
+    {
+        Spawn("enemy", pos.x, pos.y);
     }
 
     // Spawn an enemy of a certain type in a random location of the room
@@ -1548,7 +1565,7 @@ public class PCG : MonoBehaviour
     }
 
     // Make the final path to the portal
-    void MakeFinalPath()
+    public void MakeFinalPath()
     {
         int cornerSpawnDistance = (MaxMapSize / 2) - 1;
 
@@ -1579,7 +1596,45 @@ public class PCG : MonoBehaviour
 
     void GenerateFinalPath(Vector2Int direction)
     {
+        // Start the path at (0,0)
+        cursor.x = 0; cursor.y = 0;
 
+        // Calculate the length of the path
+        int length = (MaxMapSize / 2) - 1;
+        // Ammount of tiles on each side of the path
+        int width = 3;
+        // Spawn chance for enemies on each tile
+        int trivialEnemySpawnChance = 10;
+
+        // Construct the path
+        for (int i = 0; i < length; i++)
+        {
+            // Delete all tiles on the path
+            DeleteTile(cursor);
+            // Expand path based on width
+            for (int j = 1; j <= width; j++)
+            {
+                DeleteTile(cursor + (W * j));
+                DeleteTile(cursor + (E * j));
+            }
+
+            // Replace them with floor tiles
+            SpawnTile(cursor);
+            // Expand path based on width
+            for (int j = 1; j <= width; j++)
+            {
+                SpawnTile(cursor + (W * j));
+                SpawnTile(cursor + (E * j));
+
+                // Roll to Spawn an enemy
+                if (PercentRoll(trivialEnemySpawnChance))
+                    SpawnTrivialEnemy(cursor + (W * j));
+                if (PercentRoll(trivialEnemySpawnChance))
+                    SpawnTrivialEnemy(cursor + (E * j));
+            }
+
+            cursor += direction;
+        }
     }
 
     // Spawn a random upgrade pickup
@@ -1611,6 +1666,16 @@ public class PCG : MonoBehaviour
         //Did we find something?
         if (panTo == null)
             return;
+
+        //Create a cinematic anchor to pan to, and set it's position
+        var cinematicAnchor = Instantiate(PCGObject.Prefabs["cinematicanchor"]);
+        cinematicAnchor.transform.position = panTo.transform.position;
+    }
+
+    // Pan to something of interest
+    public void FinalCinematicPan()
+    {
+        var panTo = GameObject.Find("Portal(Clone)");
 
         //Create a cinematic anchor to pan to, and set it's position
         var cinematicAnchor = Instantiate(PCGObject.Prefabs["cinematicanchor"]);

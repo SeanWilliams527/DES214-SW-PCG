@@ -85,6 +85,10 @@ public class EnemyLogic : MonoBehaviour
         EnemyHealthBar.MaxHealth = StartingHealth;
         EnemyHealthBar.Health = StartingHealth;
         Health = StartingHealth;
+
+        // If we are the boss, do custom behavior
+        if (IsFinalBoss)
+            Invoke("SpawnFinalPath", 10.0f);
     }
 
     // Update is called once per frame
@@ -285,8 +289,9 @@ public class EnemyLogic : MonoBehaviour
             if (Health <= 0) //We're dead, so destroy ourself
             {
                 // If we are the boss, do custom behavior
+                float finalPathDelay = 3.0f;
                 if (IsFinalBoss)
-                    Invoke("SpawnFinalPath", 1.0f);
+                    Invoke("SpawnFinalPath", finalPathDelay);
 
                 float roll = UnityEngine.Random.Range(0.0f, 1.0f);
                 if (roll <= DropChance)
@@ -316,6 +321,11 @@ public class EnemyLogic : MonoBehaviour
     // Spawn the final path for the player to exit the level
     public void SpawnFinalPath()
     {
-
+        // Remove all existing enemies
+        PCGObject.ClearEnemies();
+        // Make the pathway to the portal
+        PCGObject.MakeFinalPath();
+        // Pan to the portal
+        PCGObject.FinalCinematicPan();
     }
 }
