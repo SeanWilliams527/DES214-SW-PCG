@@ -87,6 +87,9 @@ public class PCG : MonoBehaviour
         public int easyEnemySpawnChance;
         public int mediumEnemySpawnChance;
         public int hardEnemySpawnChance;
+        // Enemy Spawning in corridor chances
+        public int mediumEnemySpawnSnakeCorridorChance;
+        public int mediumEnemySpawnOutcoveCorridorChance;
 
         // Color for debug mode
         public Color debugColor;
@@ -383,6 +386,14 @@ public class PCG : MonoBehaviour
             SpawnTile(cursor + side1);
             SpawnTile(cursor + side2);
 
+            // Roll to add enemies
+            if (PercentRoll(CurrentGenerationMode.mediumEnemySpawnSnakeCorridorChance))
+                SpawnMediumEnemy(cursor);
+            if (PercentRoll(CurrentGenerationMode.mediumEnemySpawnSnakeCorridorChance))
+                SpawnMediumEnemy(cursor + side1);
+            if (PercentRoll(CurrentGenerationMode.mediumEnemySpawnSnakeCorridorChance))
+                SpawnMediumEnemy(cursor + side2);
+
             strideAmountLeft--;
 
             // Check if we are done with current stride
@@ -473,16 +484,26 @@ public class PCG : MonoBehaviour
             // Move cursor forward
             cursor += dir;
             SpawnTile(cursor);
+            // Roll to add enemies
+            // Roll to add enemies
+            if (PercentRoll(CurrentGenerationMode.mediumEnemySpawnOutcoveCorridorChance))
+                SpawnMediumEnemy(cursor);
             // Make outcove
             if (makeOutcove)
             {
                 SpawnTile(cursor + side1);
                 SpawnTile(cursor + side2);
 
+                // Roll to add branches
                 if (PercentRoll(branchChance))
                     Branches.Enqueue(cursor + side1);
                 if (PercentRoll(branchChance))
                     Branches.Enqueue(cursor + side2);
+                // Roll to add enemies
+                if (PercentRoll(CurrentGenerationMode.mediumEnemySpawnOutcoveCorridorChance))
+                    SpawnMediumEnemy(cursor + side1);
+                if (PercentRoll(CurrentGenerationMode.mediumEnemySpawnOutcoveCorridorChance))
+                    SpawnMediumEnemy(cursor + side2);
             }
 
             makeOutcove = !makeOutcove;
@@ -1191,6 +1212,17 @@ public class PCG : MonoBehaviour
         }
     }
 
+    // Spawns a medium enemy on a tile
+    void SpawnMediumEnemy(Vector2Int pos)
+    {
+        // Determine which medium enemy to spawn
+        int roll = DieRoll(2);
+        if (roll == 1)
+            Spawn("tank", pos.x, pos.y);
+        else
+            Spawn("spread", pos.x, pos.y);
+    }
+
     // Spawn an enemy of a certain type in a random location of the room
     bool SpawnEnemy(Room room, int enemyType, int threatAmountLeft)
     {
@@ -1433,7 +1465,7 @@ public class PCG : MonoBehaviour
     void MakeBossRoom()
     {
         // Size of the boss room
-        int size = 21;
+        int size = 17;
 
         // Make room object
         Room room = ConstructRoomObject(new Vector2Int(0, -(size/2 + 1)), N, size, size);
@@ -1447,6 +1479,7 @@ public class PCG : MonoBehaviour
         }
         // Add modifications to the room
         RoomMakeRound(room);
+        RoomAddCourtYardWalls(room);
 
         // Spawn the boss
         Spawn("boss", 0.0f, 0.0f);
@@ -1743,8 +1776,11 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment3.easyEnemySpawnChance = 5;
         GenerationModeDevelopment3.mediumEnemySpawnChance = 15;
         GenerationModeDevelopment3.hardEnemySpawnChance = 75;
-        // Debug color
-        GenerationModeDevelopment3.debugColor = new Color(0.8244471f, 0.81761f, 1.0f);
+        // Enemy Spawning in corridor chances
+        GenerationModeDevelopment3.mediumEnemySpawnSnakeCorridorChance = 7;
+        GenerationModeDevelopment3.mediumEnemySpawnOutcoveCorridorChance = 7;
+    // Debug color
+    GenerationModeDevelopment3.debugColor = new Color(0.8244471f, 0.81761f, 1.0f);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
