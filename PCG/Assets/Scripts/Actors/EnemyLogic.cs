@@ -34,6 +34,8 @@ public class EnemyLogic : MonoBehaviour
     public float DropChance = 0.35f; //35% chance
     //Chance of dropping a random boost on death
     public float BoostDropChance = 0.1f;
+    //Is this enemy the final boss?
+    public bool IsFinalBoss = false;
 
     //////////////////////////////////////////////////////////////////////////
 
@@ -282,6 +284,10 @@ public class EnemyLogic : MonoBehaviour
             GetComponent<EnemyLogic>().SetAggroState(true); //Aggro when hit
             if (Health <= 0) //We're dead, so destroy ourself
             {
+                // If we are the boss, do custom behavior
+                if (IsFinalBoss)
+                    Invoke("SpawnFinalPath", 1.0f);
+
                 float roll = UnityEngine.Random.Range(0.0f, 1.0f);
                 if (roll <= DropChance)
                     Instantiate(PCGObject.Prefabs["heart"], transform.position, Quaternion.identity);
@@ -305,5 +311,11 @@ public class EnemyLogic : MonoBehaviour
             Instantiate(PCGObject.Prefabs["shotboost"], transform.position, Quaternion.identity);
         else
             Instantiate(PCGObject.Prefabs["speedboost"], transform.position, Quaternion.identity);
+    }
+
+    // Spawn the final path for the player to exit the level
+    public void SpawnFinalPath()
+    {
+
     }
 }

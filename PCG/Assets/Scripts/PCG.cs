@@ -1523,16 +1523,63 @@ public class PCG : MonoBehaviour
         int cornerSpawnDistance = (MaxMapSize / 2) - 1;
         GameObject player;  // Reference to player
 
-        if (roll == 1)
+        if (roll == 1)  // NW corner
+        {
             player = Spawn("player", -cornerSpawnDistance, cornerSpawnDistance);
-        else if (roll == 2)
+            PlayerSpawnCorner = N + W;
+        }
+        else if (roll == 2)  // NE corner
+        {
             player = Spawn("player", cornerSpawnDistance, cornerSpawnDistance);
-        else if (roll == 3)
+            PlayerSpawnCorner = N + E;
+        }
+        else if (roll == 3)  // SW corner
+        {
             player = Spawn("player", -cornerSpawnDistance, -cornerSpawnDistance);
-        else
+            PlayerSpawnCorner = S + W;
+        }
+        else  // SE corner
+        {
             player = Spawn("player", cornerSpawnDistance, -cornerSpawnDistance);
+            PlayerSpawnCorner = S + E;
+        }
 
         PlayerSpawnLocation = player.transform.position;
+    }
+
+    // Make the final path to the portal
+    void MakeFinalPath()
+    {
+        int cornerSpawnDistance = (MaxMapSize / 2) - 1;
+
+        // Make the path and spawn the portal in a random corner of the map
+        int roll = DieRoll(4);
+
+        if (roll == 1)  // NW corner
+        {
+            Spawn("portal", -cornerSpawnDistance, cornerSpawnDistance);
+            GenerateFinalPath(N + W);
+        }
+        else if (roll == 2)  // NE corner
+        {
+            Spawn("portal", cornerSpawnDistance, cornerSpawnDistance);
+            GenerateFinalPath(N + E);
+        }
+        else if (roll == 3)  // SW corner
+        {
+            Spawn("portal", -cornerSpawnDistance, -cornerSpawnDistance);
+            GenerateFinalPath(S + W);
+        }
+        else  // SE corner
+        {
+            Spawn("portal", cornerSpawnDistance, -cornerSpawnDistance);
+            GenerateFinalPath(S + E);
+        }
+    }
+
+    void GenerateFinalPath(Vector2Int direction)
+    {
+
     }
 
     // Spawn a random upgrade pickup
