@@ -116,6 +116,10 @@ public class PCG : MonoBehaviour
     int mediumEnemyThreat = 4;
     int hardEnemyThreat = 8;
 
+    // Keep track of where player spawned
+    Vector2Int PlayerSpawnCorner;
+    Vector3 PlayerSpawnLocation;
+
 
     //////////////////////////////////////////////////////////////////////////
     // DESIGNER ADJUSTABLE VALUES
@@ -232,9 +236,6 @@ public class PCG : MonoBehaviour
         //Clear any game objects first, just in case
         ClearLevel();
 
-        //Create the camera
-        SpawnCamera();
-
         ///////////////////////////////////////////////////////
         //Add PCG logic here...
         //The level will be solid walls until you add code here. 
@@ -245,8 +246,10 @@ public class PCG : MonoBehaviour
         GenerateStartingRooms();
         MakeBossRoom();
         SpawnPlayer();
+        // Spawn the camera
+        SpawnCamera();
 
-        CurrentGenerationMode = GenerationModeDevelopment1;
+        CurrentGenerationMode = GenerationModeSetup;
 
         cursor = Branches.Dequeue();
 
@@ -1507,6 +1510,7 @@ public class PCG : MonoBehaviour
     void SpawnCamera()
     {
         var cam = Instantiate(PCGObject.Prefabs["camera"]);
+        cam.GetComponent<Transform>().position = new Vector3(PlayerSpawnLocation.x, PlayerSpawnLocation.y, -10.0f);
         var wct = Instantiate(PCGObject.Prefabs["cameratarget"]);
         cam.GetComponent<CameraFollow>().ObjectToFollow = wct.transform;
     }
@@ -1517,15 +1521,18 @@ public class PCG : MonoBehaviour
         int roll = DieRoll(4);
 
         int cornerSpawnDistance = (MaxMapSize / 2) - 1;
+        GameObject player;  // Reference to player
 
         if (roll == 1)
-            Spawn("player", -cornerSpawnDistance, cornerSpawnDistance);
+            player = Spawn("player", -cornerSpawnDistance, cornerSpawnDistance);
         else if (roll == 2)
-            Spawn("player", cornerSpawnDistance, cornerSpawnDistance);
+            player = Spawn("player", cornerSpawnDistance, cornerSpawnDistance);
         else if (roll == 3)
-            Spawn("player", -cornerSpawnDistance, -cornerSpawnDistance);
+            player = Spawn("player", -cornerSpawnDistance, -cornerSpawnDistance);
         else
-            Spawn("player", cornerSpawnDistance, -cornerSpawnDistance);
+            player = Spawn("player", cornerSpawnDistance, -cornerSpawnDistance);
+
+        PlayerSpawnLocation = player.transform.position;
     }
 
     // Spawn a random upgrade pickup
@@ -1557,6 +1564,7 @@ public class PCG : MonoBehaviour
         //Did we find something?
         if (panTo == null)
             return;
+
         //Create a cinematic anchor to pan to, and set it's position
         var cinematicAnchor = Instantiate(PCGObject.Prefabs["cinematicanchor"]);
         cinematicAnchor.transform.position = panTo.transform.position;
