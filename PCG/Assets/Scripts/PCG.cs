@@ -1606,7 +1606,7 @@ public class PCG : MonoBehaviour
         // Ammount of tiles on each side of the path
         int width = 3;
         // Spawn chance for enemies on each tile
-        int trivialEnemySpawnChance = 15;
+        int trivialEnemySpawnChance = 25;
 
         // Construct the path
         for (int i = 0; i < length; i++)
