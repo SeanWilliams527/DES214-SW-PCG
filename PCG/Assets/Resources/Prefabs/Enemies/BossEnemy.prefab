@@ -145,7 +145,7 @@ MonoBehaviour:
   StartingHealth: 20
   AggroRange: 15
   WanderInterval: 4
-  WanderChance: 0.3
+  WanderChance: 0
   DropChance: 0
   BoostDropChance: 0
   IsFinalBoss: 1

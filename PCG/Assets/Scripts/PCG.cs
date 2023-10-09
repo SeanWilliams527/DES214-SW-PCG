@@ -204,13 +204,6 @@ public class PCG : MonoBehaviour
             return;
         }
 
-        //P to generate custom room
-        if (Input.GetKey(KeyCode.P))
-        {
-            GenerateCustomRoom();
-            return;
-        }
-
         // Press number to generate enemy test room
         if (Input.GetKey(KeyCode.Alpha1))
             GenerateEnemyRoom(1);
@@ -1564,8 +1557,17 @@ public class PCG : MonoBehaviour
         PlayerSpawnLocation = player.transform.position;
     }
 
+    // Perform the final actions once the boss is defeated
+    public void OnDefeatFinalBoss()
+    {
+        float delay = 3.0f;
+        Invoke("ClearEnemies", delay);
+        Invoke("MakeFinalPath", delay);
+        Invoke("FinalCinematicPan", delay);
+    }
+
     // Make the final path to the portal
-    public void MakeFinalPath()
+    void MakeFinalPath()
     {
         int cornerSpawnDistance = (MaxMapSize / 2) - 1;
 
@@ -1604,7 +1606,7 @@ public class PCG : MonoBehaviour
         // Ammount of tiles on each side of the path
         int width = 3;
         // Spawn chance for enemies on each tile
-        int trivialEnemySpawnChance = 10;
+        int trivialEnemySpawnChance = 15;
 
         // Construct the path
         for (int i = 0; i < length; i++)

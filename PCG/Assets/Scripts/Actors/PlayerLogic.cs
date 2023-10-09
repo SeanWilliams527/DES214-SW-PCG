@@ -90,6 +90,25 @@ public class PlayerLogic : MonoBehaviour
         }
 
         UpdatePlayerMovement();
+
+        // Cheat codes ------------------
+        // Give player a lot of powerups
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            MaxHealth = MaxHealth + 20;
+            Health = MaxHealth;
+            Speed = Speed + 20;
+            for (int i = 0; i < 20; i++)
+            {
+                IncrementWeaponRange();
+                IncrementWeaponShots();
+            }
+        }
+        // Teleport player to boss
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            gameObject.transform.position = new Vector3(0, -25, 0);
+        }
     }
 
     void UpdatePlayerMovement()
