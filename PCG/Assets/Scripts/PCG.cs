@@ -1676,7 +1676,7 @@ public class PCG : MonoBehaviour
         GenerationModeSetup.roomCourtyardWallChance = 0;
         GenerationModeSetup.roomRoundedChance = 0;
         // Room exit chances
-        GenerationModeSetup.roomExitChance = 50;
+        GenerationModeSetup.roomExitChance = 100;
         // Corridor type chances
         GenerationModeSetup.normalCorridorChance = 100;
         GenerationModeSetup.snakeCorridorChance = 0;
@@ -1690,7 +1690,7 @@ public class PCG : MonoBehaviour
         GenerationModeSetup.snakeCorridorRoomchance = 0;
         GenerationModeSetup.outcoveCorridorRoomchance = 0;
         // Corridor branch chances
-        GenerationModeSetup.normalCorridorBranchchance = 15;
+        GenerationModeSetup.normalCorridorBranchchance = 30;
         GenerationModeSetup.snakeCorridorBranchchance = 15;
         GenerationModeSetup.outcoveCorridorBranchchance = 15;
         // The threat level of the each room
