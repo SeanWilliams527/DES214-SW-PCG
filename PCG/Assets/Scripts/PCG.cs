@@ -1607,6 +1607,8 @@ public class PCG : MonoBehaviour
         int width = 3;
         // Spawn chance for enemies on each tile
         int trivialEnemySpawnChance = 25;
+        // Make sure enemies aren't immediately spawned on the player
+        int enemySpawnDistance = 10;
 
         // Construct the path
         for (int i = 0; i < length; i++)
@@ -1629,10 +1631,13 @@ public class PCG : MonoBehaviour
                 SpawnTile(cursor + (E * j));
 
                 // Roll to Spawn an enemy
-                if (PercentRoll(trivialEnemySpawnChance))
-                    SpawnTrivialEnemy(cursor + (W * j));
-                if (PercentRoll(trivialEnemySpawnChance))
-                    SpawnTrivialEnemy(cursor + (E * j));
+                if (i >= enemySpawnDistance)
+                {
+                    if (PercentRoll(trivialEnemySpawnChance))
+                        SpawnTrivialEnemy(cursor + (W * j));
+                    if (PercentRoll(trivialEnemySpawnChance))
+                        SpawnTrivialEnemy(cursor + (E * j));
+                }
             }
 
             cursor += direction;
