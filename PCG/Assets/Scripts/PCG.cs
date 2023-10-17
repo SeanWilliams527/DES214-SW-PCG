@@ -90,6 +90,9 @@ public class PCG : MonoBehaviour
         // Enemy Spawning in corridor chances
         public int mediumEnemySpawnSnakeCorridorChance;
         public int mediumEnemySpawnOutcoveCorridorChance;
+        // Corridor dead end pick up chances
+        public int deadEndHeartPickupChance;
+        public int deadEndBoostPickupChance;
 
         // Color for debug mode
         public Color debugColor;
@@ -295,7 +298,15 @@ public class PCG : MonoBehaviour
         // Decide Random direction to go
         List<Vector2Int> possibleDirections = CorridorGetPossibleDirectionsNoSides();
         if (possibleDirections.Count == 0)
+        {
+            // Dead end. Roll to spawn pickups
+            int roll = RandomOutcome(new int[] { CurrentGenerationMode.deadEndHeartPickupChance, CurrentGenerationMode.deadEndBoostPickupChance });
+            if (roll == 0)
+                SpawnRandomPickup(cursor);
+            else if (roll == 1)
+                SpawnRandomPickup(cursor);
             return false;  // No directions to go
+        }
         Vector2Int direction = possibleDirections[DieRoll(possibleDirections.Count) - 1];
 
         // Determine length of corridor
@@ -349,7 +360,15 @@ public class PCG : MonoBehaviour
         // Decide direction to go
         List<Vector2Int> possibleDirections = CorridorGetPossibleDirectionsNoSides();
         if (possibleDirections.Count == 0)
+        {
+            // Dead end. Roll to spawn pickups
+            int roll = RandomOutcome(new int[] { CurrentGenerationMode.deadEndHeartPickupChance, CurrentGenerationMode.deadEndBoostPickupChance });
+            if (roll == 0)
+                SpawnRandomPickup(cursor);
+            else if (roll == 1)
+                SpawnRandomPickup(cursor);
             return false;  // No directions to go
+        }
         Vector2Int dir = possibleDirections[DieRoll(possibleDirections.Count) - 1];
         // Corridor will go forward and side to side
         Vector2Int side1 = InvertVector(dir);
@@ -374,7 +393,15 @@ public class PCG : MonoBehaviour
             // Snake will trample over anything in its way
             // Only check if going out of bounds
             if (IsOutOfBounds(cursor + dir + currentSide))
+            {
+                // Dead end. Roll to spawn pickups
+                int roll = RandomOutcome(new int[] { CurrentGenerationMode.deadEndHeartPickupChance, CurrentGenerationMode.deadEndBoostPickupChance });
+                if (roll == 0)
+                    SpawnRandomPickup(cursor);
+                else if (roll == 1)
+                    SpawnRandomPickup(cursor);
                 return false; // Cannot continue
+            }
 
             // Move cursor forward and to side (move diagonally)
             cursor += (dir + currentSide);
@@ -475,7 +502,15 @@ public class PCG : MonoBehaviour
             // Outcove corridor will trample over anything in its way
             // Only check if going out of bounds
             if (IsOutOfBounds(cursor + dir))
+            {
+                // Dead end. Roll to spawn pickups
+                int roll = RandomOutcome(new int[] { CurrentGenerationMode.deadEndHeartPickupChance, CurrentGenerationMode.deadEndBoostPickupChance });
+                if (roll == 0)
+                    SpawnRandomPickup(cursor);
+                else if (roll == 1)
+                    SpawnRandomPickup(cursor);
                 return false; // Cannot continue
+            }
 
             // Move cursor forward
             cursor += dir;
@@ -1777,6 +1812,9 @@ public class PCG : MonoBehaviour
         GenerationModeSetup.easyEnemySpawnChance = 0;
         GenerationModeSetup.mediumEnemySpawnChance = 0;
         GenerationModeSetup.hardEnemySpawnChance = 0;
+        // Dead end spawn chances
+        GenerationModeSetup.deadEndHeartPickupChance = 0;
+        GenerationModeSetup.deadEndBoostPickupChance = 0;
         // Debug color
         GenerationModeSetup.debugColor = Color.white;
 
@@ -1819,6 +1857,9 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment1.easyEnemySpawnChance = 80;
         GenerationModeDevelopment1.mediumEnemySpawnChance = 0;
         GenerationModeDevelopment1.hardEnemySpawnChance = 0;
+        // Dead end spawn chances
+        GenerationModeDevelopment1.deadEndHeartPickupChance = 0;
+        GenerationModeDevelopment1.deadEndBoostPickupChance = 0;
         // Debug color
         GenerationModeDevelopment1.debugColor = new Color(0.8795988f, 1.0f, 0.7987421f);
 
@@ -1862,8 +1903,11 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment2.mediumEnemySpawnChance = 75;
         GenerationModeDevelopment2.hardEnemySpawnChance = 5;
         // Enemy Spawning in corridor chances
-        GenerationModeDevelopment3.mediumEnemySpawnSnakeCorridorChance = 8;
-        GenerationModeDevelopment3.mediumEnemySpawnOutcoveCorridorChance = 8;
+        GenerationModeDevelopment2.mediumEnemySpawnSnakeCorridorChance = 8;
+        GenerationModeDevelopment2.mediumEnemySpawnOutcoveCorridorChance = 8;
+        // Dead end spawn chances
+        GenerationModeDevelopment2.deadEndHeartPickupChance = 0;
+        GenerationModeDevelopment2.deadEndBoostPickupChance = 0;
         // Debug color
         GenerationModeDevelopment2.debugColor = new Color(0.8553458f, 1.0f, 0.993212f);
 
@@ -1909,6 +1953,9 @@ public class PCG : MonoBehaviour
         // Enemy Spawning in corridor chances
         GenerationModeDevelopment3.mediumEnemySpawnSnakeCorridorChance = 2;
         GenerationModeDevelopment3.mediumEnemySpawnOutcoveCorridorChance = 2;
+        // Dead end spawn chances
+        GenerationModeDevelopment3.deadEndHeartPickupChance = 0;
+        GenerationModeDevelopment3.deadEndBoostPickupChance = 0;
     // Debug color
     GenerationModeDevelopment3.debugColor = new Color(0.8244471f, 0.81761f, 1.0f);
     }
