@@ -195,17 +195,17 @@ PrefabInstance:
     - target: {fileID: 1238335772146763477, guid: bb13fe8a1ca1c1740a3ce43b8cfcdbae,
         type: 3}
       propertyPath: genDev1Radius
-      value: 80
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1238335772146763477, guid: bb13fe8a1ca1c1740a3ce43b8cfcdbae,
         type: 3}
       propertyPath: genDev2Radius
-      value: 50
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1238335772146763477, guid: bb13fe8a1ca1c1740a3ce43b8cfcdbae,
         type: 3}
       propertyPath: genSetupRadius
-      value: 110
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 1238335772146763477, guid: bb13fe8a1ca1c1740a3ce43b8cfcdbae,
         type: 3}
