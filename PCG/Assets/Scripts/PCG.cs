@@ -665,13 +665,13 @@ public class PCG : MonoBehaviour
     {
         // Decide location of exit
         Vector2Int exit = new Vector2Int(0, 0);
-        if (side == N)
+        if (side == W)
             exit = new Vector2Int(room.Left, RandInt(room.Down, room.Up));
         else if (side == E)
             exit = new Vector2Int(room.Right, RandInt(room.Down, room.Up));
-        else if (side == S)
+        else if (side == N)
             exit = new Vector2Int(RandInt(room.Left, room.Right), room.Up);
-        else if (side == W)
+        else if (side == S)
             exit = new Vector2Int(RandInt(room.Left, room.Right), room.Down);
 
         Branches.Enqueue(exit);
@@ -876,25 +876,25 @@ public class PCG : MonoBehaviour
         FillAreaWithTile(roomWidth, roomHeight);
         Branches.Enqueue(new Vector2Int(-halfMapSize + 1, halfMapSize - 2));
         Branches.Enqueue(new Vector2Int(-halfMapSize + 2, halfMapSize - 1));
-        SpawnRandomPickup(new Vector2Int(-halfMapSize + 2, halfMapSize - 2));
+        //SpawnRandomPickup(new Vector2Int(-halfMapSize + 2, halfMapSize - 2));
         // Generate NE room
         cursor.x = halfMapSize - (roomWidth - 1); cursor.y = halfMapSize - (roomHeight - 1);
         FillAreaWithTile(roomWidth, roomHeight);
         Branches.Enqueue(new Vector2Int(halfMapSize - 2, halfMapSize - 1));
         Branches.Enqueue(new Vector2Int(halfMapSize - 1, halfMapSize - 2));
-        SpawnRandomPickup(new Vector2Int(halfMapSize - 2, halfMapSize - 2));
+        //SpawnRandomPickup(new Vector2Int(halfMapSize - 2, halfMapSize - 2));
         // Generate SE room
         cursor.x = halfMapSize - (roomWidth - 1); cursor.y = -halfMapSize;
         FillAreaWithTile(roomWidth, roomHeight);
         Branches.Enqueue(new Vector2Int(halfMapSize - 1, -halfMapSize + 2));
         Branches.Enqueue(new Vector2Int(halfMapSize - 2, -halfMapSize + 1));
-        SpawnRandomPickup(new Vector2Int(halfMapSize - 2, -halfMapSize + 2));
+        //SpawnRandomPickup(new Vector2Int(halfMapSize - 2, -halfMapSize + 2));
         // Generate SW room
         cursor.x = -halfMapSize; cursor.y = -halfMapSize;
         FillAreaWithTile(roomWidth, roomHeight);
         Branches.Enqueue(new Vector2Int(-halfMapSize + 2, -halfMapSize + 1));
         Branches.Enqueue(new Vector2Int(-halfMapSize + 1, -halfMapSize + 2));
-        SpawnRandomPickup(new Vector2Int(-halfMapSize + 2, -halfMapSize + 2));
+        //SpawnRandomPickup(new Vector2Int(-halfMapSize + 2, -halfMapSize + 2));
     }
 
     //Clear the entire level except for the PCG object
@@ -1861,6 +1861,9 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment2.easyEnemySpawnChance = 15;
         GenerationModeDevelopment2.mediumEnemySpawnChance = 75;
         GenerationModeDevelopment2.hardEnemySpawnChance = 5;
+        // Enemy Spawning in corridor chances
+        GenerationModeDevelopment3.mediumEnemySpawnSnakeCorridorChance = 8;
+        GenerationModeDevelopment3.mediumEnemySpawnOutcoveCorridorChance = 8;
         // Debug color
         GenerationModeDevelopment2.debugColor = new Color(0.8553458f, 1.0f, 0.993212f);
 
@@ -1904,8 +1907,8 @@ public class PCG : MonoBehaviour
         GenerationModeDevelopment3.mediumEnemySpawnChance = 15;
         GenerationModeDevelopment3.hardEnemySpawnChance = 75;
         // Enemy Spawning in corridor chances
-        GenerationModeDevelopment3.mediumEnemySpawnSnakeCorridorChance = 7;
-        GenerationModeDevelopment3.mediumEnemySpawnOutcoveCorridorChance = 7;
+        GenerationModeDevelopment3.mediumEnemySpawnSnakeCorridorChance = 2;
+        GenerationModeDevelopment3.mediumEnemySpawnOutcoveCorridorChance = 2;
     // Debug color
     GenerationModeDevelopment3.debugColor = new Color(0.8244471f, 0.81761f, 1.0f);
     }
