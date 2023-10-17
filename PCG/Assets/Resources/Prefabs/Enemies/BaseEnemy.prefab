@@ -144,8 +144,9 @@ MonoBehaviour:
   AggroRange: 10
   WanderInterval: 4
   WanderChance: 0.3
-  DropChance: 0.2
-  BoostDropChance: 0.2
+  DropChance: 0
+  BoostDropChance: 0
+  IsFinalBoss: 0
   Aggroed: 0
   Wander: 0
   Player: {fileID: 0}
