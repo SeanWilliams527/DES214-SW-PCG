@@ -29,7 +29,7 @@ public class CameraFollow : MonoBehaviour
     private float ZoomInInterpolant = 0.95f;
     private float ZoomInInterpolantDefault = 0.95f;
     //Map mode zoom size
-    private float MapModeZoom = 500.0f; //This might need to be bigger if you have a large level
+    private float MapModeZoom = 200.0f; //This might need to be bigger if you have a large level
 
     //////////////////////////////////////////////////////////////////////////
 

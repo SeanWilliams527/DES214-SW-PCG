@@ -145,7 +145,8 @@ MonoBehaviour:
   WanderInterval: 4
   WanderChance: 0.3
   DropChance: 0.35
-  BoostDropChance: 0.2
+  BoostDropChance: 0.33
+  IsFinalBoss: 0
   Aggroed: 0
   Wander: 0
   Player: {fileID: 0}
@@ -300,7 +301,7 @@ PrefabInstance:
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: BulletRange
-      value: 7
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
