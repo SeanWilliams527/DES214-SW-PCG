@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 4
-  StartingHealth: 20
+  StartingHealth: 40
   AggroRange: 15
   WanderInterval: 4
   WanderChance: 0
@@ -283,7 +283,7 @@ PrefabInstance:
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: BulletRange
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
@@ -293,7 +293,7 @@ PrefabInstance:
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
       propertyPath: ShotCooldown
-      value: 3
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 3395547099781505576, guid: 41960cec8f26d79439a69f015f23fd92,
         type: 3}
@@ -533,7 +533,7 @@ PrefabInstance:
     - target: {fileID: 1248845440106708755, guid: 8b23492cb9efaae49ace4f65e89236ae,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 160
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 1248845440106708755, guid: 8b23492cb9efaae49ace4f65e89236ae,
         type: 3}
