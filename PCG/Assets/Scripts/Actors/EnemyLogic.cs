@@ -282,7 +282,7 @@ public class EnemyLogic : MonoBehaviour
         {
             Health -= 1;
             GetComponent<EnemyLogic>().SetAggroState(true); //Aggro when hit
-            if (Health <= 0) //We're dead, so destroy ourself
+            if (Health == 0) //We're dead, so destroy ourself
             {
                 // If we are the boss, do custom behavior
                 if (IsFinalBoss)

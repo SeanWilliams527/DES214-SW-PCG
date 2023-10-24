@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class PCG : MonoBehaviour
 {
+    int numPortals = 0;
+
     //////////////////////////////////////////////////////////////////////////
     // GENERATION
     //////////////////////////////////////////////////////////////////////////
@@ -1536,6 +1538,9 @@ public class PCG : MonoBehaviour
     //Spawn any object
     GameObject Spawn(string obj, float x, float y)
     {
+        if (obj == "portal")
+            numPortals++;
+
         return Instantiate(Prefabs[obj], new Vector3(x * GridSize, y * GridSize, 0.0f), Quaternion.identity);
     }
 
