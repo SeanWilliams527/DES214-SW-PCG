@@ -62,6 +62,9 @@ public class CollectibleLogic : MonoBehaviour
                 break;
         }
 
+        // Spawn a death marker from the enemy
+        Instantiate(PCGObject.Prefabs["deathMarker"], transform.position, Quaternion.identity);
+
         //Destroy the collectible
         Destroy(gameObject);
     }

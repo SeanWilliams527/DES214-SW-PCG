@@ -1759,6 +1759,7 @@ public class PCG : MonoBehaviour
         Prefabs.Add("ultra", Resources.Load<GameObject>("Prefabs/Enemies/UltraEnemy"));
         Prefabs.Add("ultraArea", Resources.Load<GameObject>("Prefabs/Enemies/UltraAreaEnemy"));
         Prefabs.Add("boss", Resources.Load<GameObject>("Prefabs/Enemies/BossEnemy"));
+        Prefabs.Add("deathMarker", Resources.Load<GameObject>("Prefabs/Enemies/DeathMarker"));
 
         //Load all the pick-ups
         Prefabs.Add("heart", Resources.Load<GameObject>("Prefabs/Pickups/HeartPickup"));

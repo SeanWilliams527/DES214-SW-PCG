@@ -288,11 +288,15 @@ public class EnemyLogic : MonoBehaviour
                 if (IsFinalBoss)
                     SpawnFinalPath();
 
+                // Roll to spawn a drop
                 float roll = UnityEngine.Random.Range(0.0f, 1.0f);
                 if (roll <= DropChance)
                     Instantiate(PCGObject.Prefabs["heart"], transform.position, Quaternion.identity);
                 else if (roll <= DropChance + BoostDropChance)
                     DropRandomBoost();
+                else
+                    // Drop a permanant death marker
+                    Instantiate(PCGObject.Prefabs["deathMarker"], transform.position, Quaternion.identity);
                 Destroy(gameObject);
             }
         }
